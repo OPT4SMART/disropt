@@ -1,0 +1,512 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>disropt.problems.problem &mdash; disropt 0.0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> disropt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Home</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quick start</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/index.html">Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_documentation/index.html">API Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../advanced/index.html">Advanced features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements/index.html">Acknowledgements</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">disropt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>disropt.problems.problem</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for disropt.problems.problem</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">..functions</span> <span class="k">import</span> <span class="n">AbstractFunction</span>
+<span class="kn">from</span> <span class="nn">..functions.affine_form</span> <span class="k">import</span> <span class="n">aggregate_affine_form</span>
+<span class="kn">from</span> <span class="nn">..constraints</span> <span class="k">import</span> <span class="n">Constraint</span><span class="p">,</span> <span class="n">AbstractSet</span>
+<span class="kn">from</span> <span class="nn">.utilities</span> <span class="k">import</span> <span class="n">check_affine_constraints</span>
+<span class="kn">from</span> <span class="nn">..utils.utilities</span> <span class="k">import</span> <span class="n">check_symmetric</span><span class="p">,</span> <span class="n">is_semi_pos_def</span>
+
+
+<div class="viewcode-block" id="Problem"><a class="viewcode-back" href="../../../api_documentation/disropt.problems.html#disropt.problems.Problem">[docs]</a><span class="k">class</span> <span class="nc">Problem</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A generic optimization problem. </span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \\text{minimize } &amp; f(x)</span>
+
+<span class="sd">        \\text{subject to } &amp; g(x) \\leq 0</span>
+
+<span class="sd">                            &amp; h(x) = 0</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        objective_function (AbstractFunction, optional): objective function. Defaults to None.</span>
+<span class="sd">        constraints (list, optional): constraints. Defaults to None.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        objective_function (Function): Objective function to be minimized</span>
+<span class="sd">        constraints (list): constraints</span>
+<span class="sd">        input_shape (tuple): dimension of optimization variable</span>
+<span class="sd">        output_shape (tuple): output shape</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">objective_function</span><span class="p">:</span> <span class="n">AbstractFunction</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">constraints</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">force_general_problem</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">force_general_problem</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;Problem&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">objective_function</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># TODO feasibility problem</span>
+                    <span class="k">if</span> <span class="n">objective_function</span><span class="o">.</span><span class="n">is_affine</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">check_affine_constraints</span><span class="p">(</span><span class="n">constraints</span><span class="p">):</span>
+                            <span class="c1"># Convert to LinearProblem</span>
+                            <span class="kn">from</span> <span class="nn">.linear_problem</span> <span class="k">import</span> <span class="n">LinearProblem</span>
+                            <span class="n">instance</span> <span class="o">=</span> <span class="n">LinearProblem</span><span class="p">(</span><span class="n">objective_function</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+
+                    <span class="k">elif</span> <span class="n">objective_function</span><span class="o">.</span><span class="n">is_quadratic</span><span class="p">:</span>
+                        <span class="n">P</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">objective_function</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">is_semi_pos_def</span><span class="p">(</span><span class="n">P</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">check_affine_constraints</span><span class="p">(</span><span class="n">constraints</span><span class="p">):</span>
+                                <span class="c1"># Convert to QuadraticProblem</span>
+                                <span class="kn">from</span> <span class="nn">.quadratic_problem</span> <span class="k">import</span> <span class="n">QuadraticProblem</span>
+                                <span class="n">instance</span> <span class="o">=</span> <span class="n">QuadraticProblem</span><span class="p">(</span><span class="n">objective_function</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">instance</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objective_function</span><span class="p">:</span> <span class="n">AbstractFunction</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">constraints</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">force_general_problem</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_shape</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_shape</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">objective_function</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_objective_function</span><span class="p">(</span><span class="n">objective_function</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">constraints</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">constraints</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span><span class="n">constraints</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="n">constraints</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">constraint</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__split_constraints</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Problem.set_objective_function"><a class="viewcode-back" href="../../../api_documentation/disropt.problems.html#disropt.problems.Problem.set_objective_function">[docs]</a>    <span class="k">def</span> <span class="nf">set_objective_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">:</span> <span class="n">AbstractFunction</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the objective function</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fn: objective function</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: input must be a AbstractFunction object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">AbstractFunction</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span> <span class="o">=</span> <span class="n">fn</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_shape</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">input_shape</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_shape</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">output_shape</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;input must be a AbstractFunction&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Problem.add_constraint"><a class="viewcode-back" href="../../../api_documentation/disropt.problems.html#disropt.problems.Problem.add_constraint">[docs]</a>    <span class="k">def</span> <span class="nf">add_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">AbstractSet</span><span class="p">,</span> <span class="n">Constraint</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Add a new constraint</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fn: new constraint</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: constraints must be AbstractSet or Constraint</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">Constraint</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">AbstractSet</span><span class="p">):</span>
+            <span class="n">constraints_list</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">to_constraints</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">const</span> <span class="ow">in</span> <span class="n">constraints_list</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">const</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;constraints must be AbstractSet or Constraint&quot;</span><span class="p">)</span></div>
+    
+    <span class="k">def</span> <span class="nf">__split_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;split the constraints into affine equalities, affine inequalities and nonlinear constraints</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Nonlinear constraints must have scalar output</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">affine_equalities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">affine_inequalities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">affine_equality</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">affine_inequality</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nonlinear_constraints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constraints_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">equality_idx_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">inequality_idx_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nonlinear_idx_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">constr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">constr</span><span class="o">.</span><span class="n">is_affine</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">constr</span><span class="o">.</span><span class="n">is_equality</span><span class="p">:</span>
+                    <span class="n">affine_equalities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">constr</span><span class="o">.</span><span class="n">function</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">constraints_map</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;affine_equality&#39;</span><span class="p">,</span> <span class="s1">&#39;indices&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span>
+                        <span class="nb">range</span><span class="p">(</span><span class="n">equality_idx_counter</span><span class="p">,</span> <span class="n">equality_idx_counter</span><span class="o">+</span><span class="n">constr</span><span class="o">.</span><span class="n">output_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))}</span>
+                    <span class="n">equality_idx_counter</span> <span class="o">+=</span> <span class="n">constr</span><span class="o">.</span><span class="n">output_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">affine_inequalities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">constr</span><span class="o">.</span><span class="n">function</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">constraints_map</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;affine_inequality&#39;</span><span class="p">,</span> <span class="s1">&#39;indices&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span>
+                        <span class="nb">range</span><span class="p">(</span><span class="n">inequality_idx_counter</span><span class="p">,</span> <span class="n">inequality_idx_counter</span><span class="o">+</span><span class="n">constr</span><span class="o">.</span><span class="n">output_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))}</span>
+                    <span class="n">inequality_idx_counter</span> <span class="o">+=</span> <span class="n">constr</span><span class="o">.</span><span class="n">output_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">constr</span><span class="o">.</span><span class="n">output_shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Nonlinear constraints must have scalar output&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">constr</span><span class="o">.</span><span class="n">is_inequality</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">nonlinear_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">constr</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">constraints_map</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;nonlinear_inequality&#39;</span><span class="p">,</span> <span class="s1">&#39;indices&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span>
+                        <span class="nb">range</span><span class="p">(</span><span class="n">nonlinear_idx_counter</span><span class="p">,</span> <span class="n">nonlinear_idx_counter</span><span class="o">+</span><span class="n">constr</span><span class="o">.</span><span class="n">output_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))}</span>
+                    <span class="n">nonlinear_idx_counter</span> <span class="o">+=</span> <span class="n">constr</span><span class="o">.</span><span class="n">output_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Nonconvex problem&quot;</span><span class="p">)</span>
+                    <span class="n">c1</span> <span class="o">=</span> <span class="n">constr</span><span class="o">.</span><span class="n">function</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+                    <span class="n">c2</span> <span class="o">=</span> <span class="n">constr</span><span class="o">.</span><span class="n">function</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">nonlinear_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">nonlinear_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">affine_equalities</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">aggregated_equality</span> <span class="o">=</span> <span class="n">aggregate_affine_form</span><span class="p">(</span><span class="n">affine_equalities</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">affine_equality</span> <span class="o">=</span> <span class="n">aggregated_equality</span> <span class="o">==</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">affine_inequalities</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">aggregated_inequality</span> <span class="o">=</span> <span class="n">aggregate_affine_form</span><span class="p">(</span><span class="n">affine_inequalities</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">affine_inequality</span> <span class="o">=</span> <span class="n">aggregated_inequality</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">__nonlinear_f_cvxopt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;nonlinear F function for cvxopt solver</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">cvxopt</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;CVXOPT is required&quot;</span><span class="p">)</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nonlinear_constraints</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># TODO Check domain of functions</span>
+            <span class="n">x0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">input_shape</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">m</span><span class="p">,</span> <span class="n">cvxopt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># TODO check size of x=(n, 1)</span>
+            <span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">Df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+            <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">x_np</span><span class="p">)</span>
+            <span class="n">Df</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">subgradient</span><span class="p">(</span><span class="n">x_np</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">constr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nonlinear_constraints</span><span class="p">):</span>
+                <span class="n">f</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">constr</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">x_np</span><span class="p">)</span>
+                <span class="n">Df</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">constr</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">subgradient</span><span class="p">(</span><span class="n">x_np</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            <span class="c1"># TODO check domain and return None if x is not in the domain</span>
+            <span class="k">return</span> <span class="n">cvxopt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">cvxopt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">Df</span><span class="p">)</span>
+
+        <span class="c1"># TODO check size of x=(n, 1) and z=(m+1, 1)</span>
+        <span class="n">x_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">Df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">input_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">x_np</span><span class="p">)</span>
+        <span class="n">Df</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">subgradient</span><span class="p">(</span><span class="n">x_np</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">H</span> <span class="o">+=</span> <span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x_np</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">constr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nonlinear_constraints</span><span class="p">):</span>
+            <span class="n">f</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">constr</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">x_np</span><span class="p">)</span>
+            <span class="n">Df</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">constr</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">subgradient</span><span class="p">(</span><span class="n">x_np</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            <span class="n">H</span> <span class="o">+=</span> <span class="n">z</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">constr</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x_np</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cvxopt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">cvxopt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">Df</span><span class="p">),</span> <span class="n">cvxopt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Problem.solve"><a class="viewcode-back" href="../../../api_documentation/disropt.problems.html#disropt.problems.Problem.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;cvxpy&#39;</span><span class="p">,</span> <span class="n">return_only_solution</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Solve the problem</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            numpy.ndarray: solution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">solver</span> <span class="o">==</span> <span class="s1">&#39;cvxpy&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">cvxpy</span> <span class="k">as</span> <span class="nn">cvx</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;CVXPY is not installed. Trying with CVXOPT.&quot;</span><span class="p">)</span>
+                <span class="n">solver</span> <span class="o">=</span> <span class="s1">&#39;cvxopt&#39;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">_to_cvxpy</span><span class="p">())</span>
+                <span class="n">constraints</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">const</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="p">:</span>
+                    <span class="n">constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">_to_cvxpy</span><span class="p">())</span>
+                <span class="n">pb</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">pb</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+                <span class="k">except</span> <span class="n">cvx</span><span class="o">.</span><span class="n">SolverError</span><span class="p">:</span>
+                    <span class="n">pb</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;SCS&#39;</span><span class="p">)</span>
+                <span class="n">sol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pb</span><span class="o">.</span><span class="n">variables</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_shape</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">return_only_solution</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">pb</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;optimal&#39;</span><span class="p">:</span>
+                        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;solved&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">status</span> <span class="o">=</span> <span class="n">pb</span><span class="o">.</span><span class="n">status</span>
+                    <span class="n">dual_variables</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">const</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">constraints</span><span class="p">):</span>
+                        <span class="n">dual_variables</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">dual_value</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_shape</span><span class="p">)</span>
+                    
+                    <span class="n">output_dict</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s1">&#39;solution&#39;</span><span class="p">:</span> <span class="n">sol</span><span class="p">,</span>
+                        <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
+                        <span class="s1">&#39;dual_variables&#39;</span><span class="p">:</span> <span class="n">dual_variables</span>
+                    <span class="p">}</span>
+                    <span class="k">return</span> <span class="n">output_dict</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">sol</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;CVXPY cannot solve the problem. Trying with CVXOPT.&quot;</span><span class="p">)</span>
+                <span class="n">solver</span> <span class="o">=</span> <span class="s1">&#39;cvxopt&#39;</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;CVXPY cannot solve the problem. Trying with CVXOPT.&quot;</span><span class="p">)</span>
+                <span class="n">solver</span> <span class="o">=</span> <span class="s1">&#39;cvxopt&#39;</span>
+                
+        <span class="k">if</span> <span class="n">solver</span> <span class="o">==</span> <span class="s1">&#39;cvxopt&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">cvxopt</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;CVXOPT is required&quot;</span><span class="p">)</span>
+            <span class="n">cvxopt</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;show_progress&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">cvxopt</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;maxiters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">F</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nonlinear_f_cvxopt</span>
+                <span class="n">G</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">affine_inequality</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">G</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">affine_inequality</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span>
+                    <span class="n">G</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+                    <span class="n">G</span> <span class="o">=</span> <span class="n">cvxopt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+                    <span class="n">h</span> <span class="o">=</span> <span class="n">cvxopt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">affine_equality</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">A</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">affine_equality</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span>
+                    <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+                    <span class="n">A</span> <span class="o">=</span> <span class="n">cvxopt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+                    <span class="n">b</span> <span class="o">=</span> <span class="n">cvxopt</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="o">-</span><span class="n">b</span><span class="p">)</span>
+                <span class="n">sol</span> <span class="o">=</span> <span class="n">cvxopt</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">cp</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">G</span><span class="o">=</span><span class="n">G</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">return_only_solution</span><span class="p">:</span>
+                    <span class="n">dual_variables</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints_map</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;affine_equality&#39;</span><span class="p">:</span>
+                            <span class="n">dual_variables</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">])[</span><span class="bp">self</span><span class="o">.</span><span class="n">constraints_map</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="s1">&#39;indices&#39;</span><span class="p">]]</span>
+                        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints_map</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;affine_inequality&#39;</span><span class="p">:</span>
+                            <span class="n">dual_variables</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="s1">&#39;zl&#39;</span><span class="p">])[</span><span class="bp">self</span><span class="o">.</span><span class="n">constraints_map</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="s1">&#39;indices&#39;</span><span class="p">]]</span>
+                        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints_map</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;nonlinear_inequality&#39;</span><span class="p">:</span>
+                            <span class="n">dual_variables</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="s1">&#39;znl&#39;</span><span class="p">])[</span><span class="bp">self</span><span class="o">.</span><span class="n">constraints_map</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="s1">&#39;indices&#39;</span><span class="p">]]</span>
+
+                    <span class="k">if</span> <span class="n">sol</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;optimal&#39;</span><span class="p">:</span>
+                        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;solved&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">status</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span>
+
+                    <span class="n">output_dict</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s1">&#39;solution&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_shape</span><span class="p">),</span>
+                        <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
+                        <span class="s1">&#39;dual_variables&#39;</span><span class="p">:</span> <span class="n">dual_variables</span>
+                    <span class="p">}</span>
+                    <span class="k">return</span> <span class="n">output_dict</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sol</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_shape</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot solve the problem&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Problem.project_on_constraint_set"><a class="viewcode-back" href="../../../api_documentation/disropt.problems.html#disropt.problems.Problem.project_on_constraint_set">[docs]</a>    <span class="k">def</span> <span class="nf">project_on_constraint_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Compute the projection of a point onto the constraint set of the problem</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x : point to project</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            numpy.ndarray: projected point</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.projection_problem</span> <span class="k">import</span> <span class="n">ProjectionProblem</span>
+        <span class="n">pb</span> <span class="o">=</span> <span class="n">ProjectionProblem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pb</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, OPT4SMART
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

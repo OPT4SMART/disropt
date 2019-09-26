@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Local data of optimization problems &mdash; disropt 0.0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Agents in the network" href="agents.html" />
+    <link rel="prev" title="Objective functions and constraints" href="functions_constraints.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> disropt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quick start</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="setups.html"> Distributed optimization set-ups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions_constraints.html"> Objective functions and constraints</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"> Local data of optimization problems</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cost-coupled-set-up">Cost-coupled set-up</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#common-cost-set-up">Common-cost set-up</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#constraint-coupled-set-up">Constraint-coupled set-up</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="agents.html"> Agents in the network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="algorithms.html"> Algorithms</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api_documentation/index.html">API Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/index.html">Advanced features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgements/index.html">Acknowledgements</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">disropt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Local data of optimization problems</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorial/problems.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="local-data-of-optimization-problems">
+<span id="tutorial-problems"></span><h1>Local data of optimization problems<a class="headerlink" href="#local-data-of-optimization-problems" title="Permalink to this headline">¶</a></h1>
+<p>The class <code class="xref py py-class docutils literal notranslate"><span class="pre">Problem</span></code> allows one to define and solve optimization problems of various types.
+It is discussed in detail in <a class="reference internal" href="../advanced/problems.html#advanced-problems"><span class="std std-ref">a dedicated section</span></a>.</p>
+<p>In the distributed framework of <strong>disropt</strong>, the <code class="xref py py-class docutils literal notranslate"><span class="pre">Problem</span></code> class is also meant
+to specify local data (available to the agent) of global optimization problems.
+The class should be used in different ways, depending on the distributed optimization
+set-up (refer to the <a class="reference internal" href="setups.html#tutorial-setups"><span class="std std-ref">general forms</span></a>), and must be provided to
+the agent (see also <a class="reference internal" href="../quickstart/index.html#quickstart"><span class="std std-ref">Quick start</span></a>).</p>
+<div class="section" id="cost-coupled-set-up">
+<h2>Cost-coupled set-up<a class="headerlink" href="#cost-coupled-set-up" title="Permalink to this headline">¶</a></h2>
+<p>For the cost-coupled set-up, the two objects that can be specified are</p>
+<ul class="simple">
+<li><p>the local contribution to the cost function, i.e., the function <span class="math notranslate nohighlight">\(f_i(x)\)</span></p></li>
+<li><p>the local constraints (if any), i.e., the set <span class="math notranslate nohighlight">\(X_i\)</span> (which must be described through a list of constraints).</p></li>
+</ul>
+<p>To this end, create an instance of the class <code class="xref py py-class docutils literal notranslate"><span class="pre">Problem</span></code> and set the objective function
+to <span class="math notranslate nohighlight">\(f_i(x)\)</span> and the constraints to <span class="math notranslate nohighlight">\(X_i\)</span>.</p>
+<p>For instance, suppose <span class="math notranslate nohighlight">\(x \in \mathbb{R}^2\)</span> and assume the agent knows</p>
+<div class="math notranslate nohighlight">
+\[f_i(x) = \|x\|^2,
+\hspace{1cm}
+X_i = \{x \mid -1 \le x \le 1\}.\]</div>
+<p>The corresponding Python code is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">disropt.functions</span> <span class="k">import</span> <span class="n">SquaredNorm</span><span class="p">,</span> <span class="n">Variable</span>
+<span class="kn">from</span> <span class="nn">disropt.problem</span> <span class="k">import</span> <span class="n">Problem</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">objective_function</span> <span class="o">=</span> <span class="n">SquaredNorm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">Problem</span><span class="p">(</span><span class="n">objective_function</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If there are no local constraints (in the example <span class="math notranslate nohighlight">\(X_i \equiv \mathbb{R}^2\)</span>), then
+no constraints should be passed to <code class="xref py py-class docutils literal notranslate"><span class="pre">Problem</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">objective_function</span> <span class="o">=</span> <span class="n">SquaredNorm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">Problem</span><span class="p">(</span><span class="n">objective_function</span><span class="p">)</span> <span class="c1"># no constraints</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="common-cost-set-up">
+<h2>Common-cost set-up<a class="headerlink" href="#common-cost-set-up" title="Permalink to this headline">¶</a></h2>
+<p>For the common-cost set-up, the objective function <span class="math notranslate nohighlight">\(f(x)\)</span> is assumed to be known by
+all the agents. Theerefore, the two objects that must be specified are</p>
+<ul class="simple">
+<li><p>the global cost function, i.e., the function <span class="math notranslate nohighlight">\(f(x)\)</span></p></li>
+<li><p>the local constraints, i.e., the set <span class="math notranslate nohighlight">\(X_i\)</span> (which must be described through a list of constraints).</p></li>
+</ul>
+<p>To this end, create an instance of the class <code class="xref py py-class docutils literal notranslate"><span class="pre">Problem</span></code> and set the objective function
+to <span class="math notranslate nohighlight">\(f(x)\)</span> and the constraints to <span class="math notranslate nohighlight">\(X_i\)</span>.</p>
+<p>For instance, suppose <span class="math notranslate nohighlight">\(x \in \mathbb{R}^2\)</span> and assume the agent knows</p>
+<div class="math notranslate nohighlight">
+\[f(x) = \|x\|^2,
+\hspace{1cm}
+X_i = \{x \mid -1 \le x \le 1\}.\]</div>
+<p>The corresponding Python code is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">disropt.functions</span> <span class="k">import</span> <span class="n">SquaredNorm</span><span class="p">,</span> <span class="n">Variable</span>
+<span class="kn">from</span> <span class="nn">disropt.problem</span> <span class="k">import</span> <span class="n">Problem</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">objective_function</span> <span class="o">=</span> <span class="n">SquaredNorm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">Problem</span><span class="p">(</span><span class="n">objective_function</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="constraint-coupled-set-up">
+<h2>Constraint-coupled set-up<a class="headerlink" href="#constraint-coupled-set-up" title="Permalink to this headline">¶</a></h2>
+<p>For the constraint-coupled set-up, the three objects that can be specified are</p>
+<ul class="simple">
+<li><p>the local contribution to the cost function, i.e., the function <span class="math notranslate nohighlight">\(f_i(x_i)\)</span></p></li>
+<li><p>the local contribution to the coupling constraints, i.e., the function <span class="math notranslate nohighlight">\(g_i(x_i)\)</span></p></li>
+<li><p>the local constraints (if any), i.e., the set <span class="math notranslate nohighlight">\(X_i\)</span> (which must be described through a list of constraints).</p></li>
+</ul>
+<p>To this end, create an instance of the class <code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintCoupledProblem</span></code> and set the objective function
+to <span class="math notranslate nohighlight">\(f_i(x_i)\)</span>, the coupling function to <span class="math notranslate nohighlight">\(g_i(x_i)\)</span> and the constraints to <span class="math notranslate nohighlight">\(X_i\)</span>.</p>
+<p>For instance, suppose <span class="math notranslate nohighlight">\(x_i \in \mathbb{R}^2\)</span> and assume the agent knows</p>
+<div class="math notranslate nohighlight">
+\[f_i(x_i) = \|x_i\|^2,
+\hspace{1cm}
+g_i(x_i) = x_i,
+\hspace{1cm}
+X_i = \{x \mid -1 \le x \le 1\}.\]</div>
+<p>The corresponding Python code is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">disropt.functions</span> <span class="k">import</span> <span class="n">SquaredNorm</span><span class="p">,</span> <span class="n">Variable</span>
+<span class="kn">from</span> <span class="nn">disropt.problem</span> <span class="k">import</span> <span class="n">ConstraintCoupledProblem</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">objective_function</span> <span class="o">=</span> <span class="n">SquaredNorm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">coupling_function</span> <span class="o">=</span> <span class="n">x</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">Problem</span><span class="p">(</span><span class="n">objective_function</span><span class="p">,</span> <span class="n">constraints</span><span class="p">,</span> <span class="n">coupling_function</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If there are no local constraints (in the example <span class="math notranslate nohighlight">\(X_i \equiv \mathbb{R}^2\)</span>), then
+no constraints should be passed to <code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintCoupledProblem</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">objective_function</span> <span class="o">=</span> <span class="n">SquaredNorm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">coupling_function</span> <span class="o">=</span> <span class="n">x</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">Problem</span><span class="p">(</span>
+    <span class="n">objective_function</span><span class="o">=</span><span class="n">objective_function</span><span class="p">,</span>
+    <span class="n">coupling_function</span><span class="o">=</span><span class="n">coupling_function</span><span class="p">)</span> <span class="c1"># no local constraints</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="agents.html" class="btn btn-neutral float-right" title="Agents in the network" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="functions_constraints.html" class="btn btn-neutral float-left" title="Objective functions and constraints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, OPT4SMART
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

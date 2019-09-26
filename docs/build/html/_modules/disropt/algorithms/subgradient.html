@@ -1,0 +1,393 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>disropt.algorithms.subgradient &mdash; disropt 0.0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> disropt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Home</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quick start</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/index.html">Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_documentation/index.html">API Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../advanced/index.html">Advanced features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements/index.html">Acknowledgements</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">disropt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>disropt.algorithms.subgradient</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for disropt.algorithms.subgradient</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">..agents</span> <span class="k">import</span> <span class="n">Agent</span>
+<span class="kn">from</span> <span class="nn">..constraints.projection_sets</span> <span class="k">import</span> <span class="n">AbstractSet</span>
+<span class="kn">from</span> <span class="nn">.consensus</span> <span class="k">import</span> <span class="n">Consensus</span><span class="p">,</span> <span class="n">BlockConsensus</span>
+
+
+<div class="viewcode-block" id="SubgradientMethod"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.subgradient.html#disropt.algorithms.subgradient.SubgradientMethod">[docs]</a><span class="k">class</span> <span class="nc">SubgradientMethod</span><span class="p">(</span><span class="n">Consensus</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Distributed projected (sub)gradient method.</span>
+
+<span class="sd">    From the perspective of agent :math:`i` the algorithm works as follows. For :math:`k=0,1,\\dots`</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        y_i^{k} &amp;= \sum_{j=1}^N w_{ij} x_j^k</span>
+
+<span class="sd">       x_i^{k+1} &amp;= \Pi_{X}[y_i^k - \\alpha^k \\tilde{\\nabla} f_i(y_i^k)]</span>
+
+<span class="sd">    where :math:`x_i,y_i\\in\\mathbb{R}^n`, :math:`X\\subseteq\mathbb{R}^n`, :math:`\\alpha^k` is a positive stepsize, :math:`w_{ij}` denotes the weight assigned by agent :math:`i` to agent :math:`j`, :math:`\\Pi_X[]` denotes the projection operator over the set :math:`X` and :math:`\\tilde{\\nabla} f_i(y_i^k)\\in\\partial f_i(y_i^k)` a (sub)gradient of :math:`f_i` computed at :math:`y_i^k`.</span>
+<span class="sd">    The weight matrix :math:`W=[w_{ij}]_{i,j=1}^N` should be doubly stochastic.</span>
+
+<span class="sd">    The algorithm, as written above, was originally presented in [NeOz09]_. Many other variants and extension has been proposed, allowing for stochastic objective functions, time-varying graphs, local stepsize sequences. All these variant can be implemented through the :class:`SubgradientMethod` class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent</span><span class="p">:</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">initial_condition</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">enable_log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">Agent</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Agent must be an Agent&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SubgradientMethod</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">initial_condition</span><span class="p">,</span> <span class="n">enable_log</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_local_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">stepsize</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">projection</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="c1"># Perform a sugradient step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">stepsize</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">subgradient</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">projection</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">project_on_constraint_set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SubgradientMethod.run"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.subgradient.html#disropt.algorithms.subgradient.SubgradientMethod.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">stepsize</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Run the algorithm for a given number of iterations</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            iterations: Number of iterations. Defaults to 1000.</span>
+<span class="sd">            stepsize: If a float is given as input, the stepsize is constant. </span>
+<span class="sd">                                                         If a function is given, it must take an iteration k as input and output the corresponding stepsize.. Defaults to 0.1.</span>
+<span class="sd">            verbose: If True print some information during the evolution of the algorithm. Defaults to False.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: The number of iterations must be an int</span>
+<span class="sd">            TypeError: The stepsize must be a float or a callable</span>
+<span class="sd">            ValueError: Only sets (children of AstractSet) with explicit projections are currently supported</span>
+<span class="sd">            ValueError: Only one constraint per time is currently supported</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            return the sequence of estimates if enable_log=True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterations</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The number of iterations must be an int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">stepsize</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="n">callable</span><span class="p">(</span><span class="n">stepsize</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The stepsize must be a float or a function&quot;</span><span class="p">)</span>
+
+        <span class="n">actv_projection</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">constraints</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">actv_projection</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_log</span><span class="p">:</span>
+            <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterations</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stepsize</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="n">stepsize</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="n">stepsize</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iterate_run</span><span class="p">(</span><span class="n">stepsize</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">actv_projection</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_log</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+            
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Iteration </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_log</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span></div></div>
+
+
+<div class="viewcode-block" id="BlockSubgradientMethod"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.subgradient.html#disropt.algorithms.subgradient.BlockSubgradientMethod">[docs]</a><span class="k">class</span> <span class="nc">BlockSubgradientMethod</span><span class="p">(</span><span class="n">BlockConsensus</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Distributed block subgradient method. This is a special instance of the Block Proximal Method in [FaNo19]_</span>
+
+<span class="sd">    At each iteration, the agent can update its local estimate or not at each iteration according to a certain probability (awakening_probability).</span>
+<span class="sd">    From the perspective of agent :math:`i` the algorithm works as follows. At iteration :math:`k` if the agent is awake, it selects a random block :math:`\\ell_i^k` of its local solution and updates</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \\begin{align}</span>
+<span class="sd">        y_i^k &amp;= \\sum_{j\\in\\mathcal{N}_i} w_{ij} x_{j\\mid i}^k \\\\</span>
+<span class="sd">        x_{i,\\ell}^{k+1} &amp;= \\begin{cases}</span>
+<span class="sd">             \\Pi_{X_\\ell}\\left[y_i^k - \\alpha_i^k [\\tilde{\\nabla} f_i(y_i^k)]_{\\ell}\\right] &amp; \\text{if } \\ell = \\ell_i^k \\\\</span>
+<span class="sd">             x_{i,\\ell}^{k} &amp; \\text{otherwise}</span>
+<span class="sd">             \\end{cases}</span>
+<span class="sd">        \\end{align}</span>
+
+<span class="sd">    then it broadcasts :math:`x_{i,\\ell_i^k}^{k+1}` to its out-neighbors. Otherwise (if the agent is not awake) :math:`x_{i}^{k+1}=x_i^k`.</span>
+<span class="sd">    Here :math:`\\mathcal{N}_i` is the current set of in-neighbors and :math:`x_{j\\mid i},j\\in\\mathcal{N}_i` is the local copy of :math:`x_j` available at node :math:`i` and :math:`x_{i,\\ell}` denotes the :math:`\\ell`-th block of :math:`x_i`. </span>
+<span class="sd">    The weight matrix :math:`W=[w_{ij}]_{i,j=1}^N` should be doubly stochastic.</span>
+
+<span class="sd">    Notice that if there is only one block and awakening_probability=1 the :class:`BlockSubgradientMethod` reduces to the :class:`SubgradientMethod`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent</span><span class="p">:</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">initial_condition</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">Agent</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Agent must be an Agent&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BlockSubgradientMethod</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">initial_condition</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_local_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">selected_block</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">stepsize</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">projection</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">block</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">selected_block</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="c1"># Perform a sugradient step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">block</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">block</span><span class="p">]</span> <span class="o">-</span> <span class="n">stepsize</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">subgradient</span><span class="p">(</span><span class="n">y</span><span class="p">)[</span><span class="n">block</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">projection</span><span class="p">:</span>
+            <span class="c1"># TODO: single block projection with multiple sets</span>
+            <span class="n">old_x</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">project_on_constraint_set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">idx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">block</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">old_x</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">!=</span> <span class="n">value</span><span class="p">:</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Constraints are not separable on blocks. Convergence is not guaranteed.&quot;</span><span class="p">)</span>
+                        <span class="k">break</span>
+
+<div class="viewcode-block" id="BlockSubgradientMethod.run"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.subgradient.html#disropt.algorithms.subgradient.BlockSubgradientMethod.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">stepsize</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Run the algorithm for a given number of iterations</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            iterations: Number of iterations. Defaults to 1000.</span>
+<span class="sd">            stepsize: If a float is given as input, the stepsize is constant. </span>
+<span class="sd">                                                         If a function is given, it must take an iteration k as input and output the corresponding stepsize.. Defaults to 0.1.</span>
+<span class="sd">            verbose: If True print some information during the evolution of the algorithm. Defaults to False.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: The number of iterations must be an int</span>
+<span class="sd">            TypeError: The stepsize must be a float or a callable</span>
+<span class="sd">            ValueError: Only sets (children of AstractSet) with explicit projections are currently supported</span>
+<span class="sd">            ValueError: Only one constraint per time is currently supported</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            return the sequence of estimates if enable_log=True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterations</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The number of iterations must be an int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">stepsize</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="n">callable</span><span class="p">(</span><span class="n">stepsize</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The stepsize must be a float or a function&quot;</span><span class="p">)</span>
+
+        <span class="n">actv_projection</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">constraints</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">actv_projection</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_log</span><span class="p">:</span>
+            <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterations</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stepsize</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="n">stepsize</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="n">stepsize</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iterate_run</span><span class="p">(</span><span class="n">stepsize</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">actv_projection</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_log</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+            
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Iteration </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_log</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span></div></div>
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, OPT4SMART
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

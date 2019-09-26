@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>disropt.algorithms.gradient_tracking &mdash; disropt 0.0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> disropt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Home</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quick start</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/index.html">Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_documentation/index.html">API Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../advanced/index.html">Advanced features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements/index.html">Acknowledgements</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">disropt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>disropt.algorithms.gradient_tracking</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for disropt.algorithms.gradient_tracking</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">..agents</span> <span class="k">import</span> <span class="n">Agent</span>
+<span class="kn">from</span> <span class="nn">.algorithm</span> <span class="k">import</span> <span class="n">Algorithm</span>
+<span class="kn">from</span> <span class="nn">.consensus</span> <span class="k">import</span> <span class="n">PushSumConsensus</span>
+
+
+<div class="viewcode-block" id="GradientTracking"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.subgradient.html#disropt.algorithms.gradient_tracking.GradientTracking">[docs]</a><span class="k">class</span> <span class="nc">GradientTracking</span><span class="p">(</span><span class="n">Algorithm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gradient Tracking Algorithm [...]_ </span>
+
+<span class="sd">    From the perspective of agent :math:`i` the algorithm works as follows. For :math:`k=0,1,\\dots`</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        x_i^{k+1} &amp; = \\sum_{j=1}^N w_{ij} x_j^k - \\alpha d_i^k \\\\</span>
+<span class="sd">        d_i^{k+1} &amp; = \\sum_{j=1}^N w_{ij} d_j^k - [ \\nabla f_i (x_i^{k+1}) - \\nabla f_i (x_i^k)]</span>
+
+
+<span class="sd">    where :math:`x_i\\in\\mathbb{R}^n` and :math:`d_i\\in\\mathbb{R}^n`. The weight matrix :math:`W=[w_{ij}]` must be doubly-stochastic. Extensions to other class of weight matrices :math:`W` are not currently supported.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        agent (Agent): agent to execute the algorithm</span>
+<span class="sd">        initial_condition (numpy.ndarray): initial condition for :math:`x_i`</span>
+<span class="sd">        enable_log (bool): True for enabling log</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        agent (Agent): agent to execute the algorithm</span>
+<span class="sd">        x0 (numpy.ndarray): initial condition</span>
+<span class="sd">        x (numpy.ndarray): current value of the local solution</span>
+<span class="sd">        d (numpy.ndarray): current value of the local tracker</span>
+<span class="sd">        shape (tuple): shape of the variable</span>
+<span class="sd">        x_neigh (dict): dictionary containing the local solution of the (in-)neighbors</span>
+<span class="sd">        d_neigh (dict): dictionary containing the local tracker of the (in-)neighbors</span>
+<span class="sd">        enable_log (bool): True for enabling log</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent</span><span class="p">:</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">initial_condition</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">enable_log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GradientTracking</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">enable_log</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">x0</span> <span class="o">=</span> <span class="n">initial_condition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">initial_condition</span>
+        <span class="c1"># Initialize tracker at x0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">subgradient</span><span class="p">(</span><span class="n">initial_condition</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_neigh</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d_neigh</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">_update_local_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;update the local solution</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x: new value</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: Input must be a numpy.ndarray</span>
+<span class="sd">            ValueError: Incompatible shapes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be a numpy.ndarray&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span> <span class="n">x0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Incompatible shapes&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">_update_local_tracker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;update the local tracker</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            d: new value</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: Input must be a numpy.ndarray</span>
+<span class="sd">            ValueError: Incompatible shapes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be a numpy.ndarray&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span> <span class="n">x0</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Incompatible shapes&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">d</span>
+
+<div class="viewcode-block" id="GradientTracking.iterate_run"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.subgradient.html#disropt.algorithms.gradient_tracking.GradientTracking.iterate_run">[docs]</a>    <span class="k">def</span> <span class="nf">iterate_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stepsize</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run a single iterate of the gradient tracking algorithm</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">data_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">neighbors_exchange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">neigh</span> <span class="ow">in</span> <span class="n">data_x</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_neigh</span><span class="p">[</span><span class="n">neigh</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_x</span><span class="p">[</span><span class="n">neigh</span><span class="p">]</span>
+
+        <span class="n">data_d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">neighbors_exchange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">neigh</span> <span class="ow">in</span> <span class="n">data_d</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">d_neigh</span><span class="p">[</span><span class="n">neigh</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_d</span><span class="p">[</span><span class="n">neigh</span><span class="p">]</span>
+
+        <span class="n">x_kp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">in_weights</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">d_kp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">in_weights</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">in_neighbors</span><span class="p">:</span>
+            <span class="n">x_kp</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">in_weights</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_neigh</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">d_kp</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">in_weights</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_neigh</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+        <span class="n">x_kp</span> <span class="o">+=</span> <span class="o">-</span> <span class="n">stepsize</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span>
+        <span class="n">d_kp</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">subgradient</span><span class="p">(</span>
+            <span class="n">x_kp</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">subgradient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_local_solution</span><span class="p">(</span><span class="n">x_kp</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_local_tracker</span><span class="p">(</span><span class="n">d_kp</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GradientTracking.run"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.subgradient.html#disropt.algorithms.gradient_tracking.GradientTracking.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">stepsize</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Run the gradient tracking algorithm for a given number of iterations</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            iterations: Number of iterations. Defaults to 1000.</span>
+<span class="sd">            stepsize: If a float is given as input, the stepsize is constant. </span>
+<span class="sd">                                                        Default is 0.01.</span>
+<span class="sd">            verbose: If True print some information during the evolution of the algorithm. Defaults to False.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: The number of iterations must be an int</span>
+<span class="sd">            TypeError: The stepsize must be a float</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            return the sequence of estimates if enable_log=True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterations</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The number of iterations must be an int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">stepsize</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="n">callable</span><span class="p">(</span><span class="n">stepsize</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The stepsize must be a float or a function&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_log</span><span class="p">:</span>
+            <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterations</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stepsize</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="n">stepsize</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="n">stepsize</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iterate_run</span><span class="p">(</span><span class="n">stepsize</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_log</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+            
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Iteration </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_log</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span></div>
+
+<div class="viewcode-block" id="GradientTracking.get_result"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.subgradient.html#disropt.algorithms.gradient_tracking.GradientTracking.get_result">[docs]</a>    <span class="k">def</span> <span class="nf">get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the actual value of x</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            numpy.ndarray: value of x</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span></div></div>
+
+
+<div class="viewcode-block" id="DirectedGradientTracking"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.subgradient.html#disropt.algorithms.gradient_tracking.DirectedGradientTracking">[docs]</a><span class="k">class</span> <span class="nc">DirectedGradientTracking</span><span class="p">(</span><span class="n">PushSumConsensus</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gradient Tracking Algorithm [XiKh18]_ </span>
+
+<span class="sd">    From the perspective of agent :math:`i` the algorithm works as follows. For :math:`k=0,1,\\dots`</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        x_i^{k+1} &amp; = \\sum_{j=1}^N a_{ij} x_j^k - \\alpha y_i^k \\\\</span>
+<span class="sd">        y_i^{k+1} &amp; = \\sum_{j=1}^N b_{ij} (y_j^k - [ \\nabla f_j (x_j^{k+1}) - \\nabla f_j (x_j^k)])</span>
+
+
+<span class="sd">    where :math:`x_i\\in\\mathbb{R}^n` and :math:`y_i\\in\\mathbb{R}^n`. The weight matrix :math:`A=[a_{ij}]` must be row-stochastic, while :math:`B=[b_{ij}]` must be column-stochastic. The underlying graph can be directed (and unbalanced).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent</span><span class="p">:</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">initial_condition</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">enable_log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DirectedGradientTracking</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">initial_condition</span><span class="p">,</span> <span class="n">enable_log</span><span class="p">)</span>
+
+        <span class="c1"># initialize tracker</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">subgradient</span><span class="p">(</span><span class="n">initial_condition</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DirectedGradientTracking.iterate_run"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.subgradient.html#disropt.algorithms.gradient_tracking.DirectedGradientTracking.iterate_run">[docs]</a>    <span class="k">def</span> <span class="nf">iterate_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run a single iterate of the algorithm</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stepsize</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;stepsize&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+        <span class="c1"># in</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">neighbors_exchange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">neigh</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_neigh</span><span class="p">[</span><span class="n">neigh</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">neigh</span><span class="p">]</span>
+
+        <span class="n">x_avg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">in_weights</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">in_neighbors</span><span class="p">:</span>
+            <span class="n">x_avg</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">in_weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_neigh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">subg_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">subgradient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_x_average</span><span class="p">(</span><span class="n">x_avg</span> <span class="o">-</span> <span class="n">stepsize</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">subg_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">subgradient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># y average</span>
+        <span class="n">send_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">gradient_diff</span> <span class="o">=</span> <span class="n">subg_new</span> <span class="o">-</span> <span class="n">subg_old</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">out_neighbors</span><span class="p">:</span>
+            <span class="n">send_data</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">out_weights</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">gradient_diff</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">neighbors_exchange</span><span class="p">(</span><span class="n">send_data</span><span class="p">,</span> <span class="n">dict_neigh</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">neigh</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_neigh</span><span class="p">[</span><span class="n">neigh</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">neigh</span><span class="p">]</span>
+
+        <span class="n">y_avg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">out_weights</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">gradient_diff</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">in_neighbors</span><span class="p">:</span>
+            <span class="n">y_avg</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_neigh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_y_average</span><span class="p">(</span><span class="n">y_avg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DirectedGradientTracking.get_result"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.subgradient.html#disropt.algorithms.gradient_tracking.DirectedGradientTracking.get_result">[docs]</a>    <span class="k">def</span> <span class="nf">get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the actual value of x</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            numpy.ndarray: value of x</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, OPT4SMART
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

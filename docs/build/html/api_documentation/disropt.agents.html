@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Agents &mdash; disropt 0.0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Communicators" href="disropt.communicators.html" />
+    <link rel="prev" title="API Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> disropt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quick start</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#"> Agents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#agent">Agent</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.communicators.html"> Communicator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.html"> Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.functions.html"> Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.constraints.html"> Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.problems.html"> Problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.utils.html"> Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/index.html">Advanced features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgements/index.html">Acknowledgements</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">disropt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">API Documentation</a> &raquo;</li>
+        
+      <li>Agents</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api_documentation/disropt.agents.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="agents">
+<h1>Agents<a class="headerlink" href="#agents" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="agent">
+<h2>Agent<a class="headerlink" href="#agent" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="id1"></span><dl class="class">
+<dt id="disropt.agents.Agent">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.agents.</code><code class="sig-name descname">Agent</code><span class="sig-paren">(</span><em class="sig-param">in_neighbors=None</em>, <em class="sig-param">out_neighbors=None</em>, <em class="sig-param">communicator=None</em>, <em class="sig-param">in_weights=None</em>, <em class="sig-param">out_weights=None</em>, <em class="sig-param">auto_local=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/agents/agent.html#Agent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.agents.Agent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Agent object represents an agent in a network with communication capabilities</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_neighbors</strong> (<em>list</em>) – list of agents from which communication is received</p></li>
+<li><p><strong>out_neighbors</strong> (<em>list</em>) – list of agents to which information is send</p></li>
+<li><p><strong>communicator</strong> (<a class="reference internal" href="disropt.communicators.html#disropt.communicators.Communicator" title="disropt.communicators.Communicator"><em>Communicator</em></a><em>, </em><em>optional</em>) – a Communicator object used to perform communications (if none is provided, it is automatically set to MPICommunicator). Defaults to None.</p></li>
+<li><p><strong>in_weights</strong> (<em>list</em><em> or </em><em>dict</em><em>, </em><em>optional</em>) – list or dict containing weights to assign to information coming from each in-neighbor. If a list is provided, it must have lenght equal to the number of agents in the network. If a dict is provided, it must have a key for each in-neighbor and, associated to it, the correspondig weight. Defaults to None, implies equal in_weights to in-neighbors.</p></li>
+<li><p><strong>out_weights</strong> (<em>list</em><em> or </em><em>dict</em><em>, </em><em>optional</em>) – list or dict containing weights to assign to out-neighbor. If a list is provided, it must have lenght equal to the number of agents in the network. If a dict is provided, it must have a key for each out-neighbor and, associated to it, the correspondig weight. Defaults to None, implies equal in_weights to out-neighbors.</p></li>
+<li><p><strong>auto_local</strong> (<em>bool</em><em>, </em><em>optional</em>) – If False the (in-)weight for the local agent must be provided. Otherwise it is set automatically, provided that the in_weights have sum in [0,1]. Defaults to True.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="disropt.agents.Agent.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#disropt.agents.Agent.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>id of the Agent</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.agents.Agent.in_neighbors">
+<code class="sig-name descname">in_neighbors</code><a class="headerlink" href="#disropt.agents.Agent.in_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of in-neighbors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.agents.Agent.out_neighbors">
+<code class="sig-name descname">out_neighbors</code><a class="headerlink" href="#disropt.agents.Agent.out_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of out-neighbors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.agents.Agent.in_weights">
+<code class="sig-name descname">in_weights</code><a class="headerlink" href="#disropt.agents.Agent.in_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>a dict containing weights to assign to information coming from each in-neighbor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.agents.Agent.out_weights">
+<code class="sig-name descname">out_weights</code><a class="headerlink" href="#disropt.agents.Agent.out_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>a dict containing weights to assign to out-neighbors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.agents.Agent.communicator">
+<code class="sig-name descname">communicator</code><a class="headerlink" href="#disropt.agents.Agent.communicator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Communicator object used to perform communications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="disropt.communicators.html#disropt.communicators.Communicator" title="disropt.communicators.Communicator">Communicator</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.agents.Agent.problem">
+<code class="sig-name descname">problem</code><a class="headerlink" href="#disropt.agents.Agent.problem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Local optimization problem.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="disropt.problems.html#disropt.problems.Problem" title="disropt.problems.Problem">Problem</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.agents.Agent.neighbors_exchange">
+<code class="sig-name descname">neighbors_exchange</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">dict_neigh=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/agents/agent.html#Agent.neighbors_exchange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.agents.Agent.neighbors_exchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exchange data with neighbors (synchronously). Send obj to the out-neighbors and receive received_obj from in-neighbors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – object to send</p></li>
+<li><p><strong>dict_neigh</strong> – True if obj contains a dictionary with different objects for each neighbor. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a dictionary containing an object for each in-neighbor</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.agents.Agent.neighbors_receive_asynchronous">
+<code class="sig-name descname">neighbors_receive_asynchronous</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/agents/agent.html#Agent.neighbors_receive_asynchronous"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.agents.Agent.neighbors_receive_asynchronous" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receive data from in-neighbors (if any have been sent)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a dictionary containing an object for each in-neighbor that has sent one</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.agents.Agent.neighbors_send">
+<code class="sig-name descname">neighbors_send</code><span class="sig-paren">(</span><em class="sig-param">obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/agents/agent.html#Agent.neighbors_send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.agents.Agent.neighbors_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send data to out-neighbors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – object to send</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.agents.Agent.set_neighbors">
+<code class="sig-name descname">set_neighbors</code><span class="sig-paren">(</span><em class="sig-param">in_neighbors</em>, <em class="sig-param">out_neighbors</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/agents/agent.html#Agent.set_neighbors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.agents.Agent.set_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set in and out neighbors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_neighbors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – list of agents from which communication is received</p></li>
+<li><p><strong>out_neighbors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – list of agents to which information is send</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.agents.Agent.set_problem">
+<code class="sig-name descname">set_problem</code><span class="sig-paren">(</span><em class="sig-param">problem</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/agents/agent.html#Agent.set_problem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.agents.Agent.set_problem" title="Permalink to this definition">¶</a></dt>
+<dd><p>set the local optimization problem</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>problem</strong> (<a class="reference internal" href="disropt.problems.html#disropt.problems.Problem" title="disropt.problems.Problem"><em>Problem</em></a>) – Problem object</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Input must be a Problem object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.agents.Agent.set_weights">
+<code class="sig-name descname">set_weights</code><span class="sig-paren">(</span><em class="sig-param">in_weights=None</em>, <em class="sig-param">out_weights=None</em>, <em class="sig-param">auto_local=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/agents/agent.html#Agent.set_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.agents.Agent.set_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set in_weights to assign to in-neighbors and the one for agent itself.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_weights</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – list or dict contatining in_weights to assign to information coming from each in-neighbor. If a list is provided, it must have lenght equal to the number of agents in the network. If a dict is provided, it must have a key for each in-neighbor and, associated to it, the correspondig weight. Defaults to None, implies equal in_weights to in-neighbors.</p></li>
+<li><p><strong>out_weights</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – list or dict contatining in_weights to assign to out-neighbors. If a list is provided, it must have lenght equal to the number of agents in the network. If a dict is provided, it must have a key for each out-neighbor and, associated to it, the correspondig weight. Defaults to None, implies equal in_weights to out neighbors.</p></li>
+<li><p><strong>auto_local</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If False the weight for the local agent must be provided. Otherwise it is set automatically, provided that the in_weights have sum in [0,1]. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If a dict is provided as argument, it must contain a key for each in-neighbor.</p></li>
+<li><p><strong>ValueError</strong> – Input must be list or dict</p></li>
+<li><p><strong>ValueError</strong> – If auto_local is not False, the provided in_weights must have sum in [0,1]</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="disropt.communicators.html" class="btn btn-neutral float-right" title="Communicators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="API Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, OPT4SMART
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

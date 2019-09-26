@@ -1,0 +1,340 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Algorithms &mdash; disropt 0.0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Consensus Algorithms" href="disropt.algorithms.consensus.html" />
+    <link rel="prev" title="Communicators" href="disropt.communicators.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> disropt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quick start</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="disropt.agents.html"> Agents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.communicators.html"> Communicator</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"> Algorithms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="disropt.algorithms.consensus.html">Consensus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="disropt.algorithms.subgradient.html">(Sub)gradient algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="disropt.algorithms.dual.html">Dual and Primal/Dual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="disropt.algorithms.setmembership.html">Set membership algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="disropt.algorithms.misc.html">Miscellaneous</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.functions.html"> Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.constraints.html"> Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.problems.html"> Problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.utils.html"> Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/index.html">Advanced features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgements/index.html">Acknowledgements</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">disropt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">API Documentation</a> &raquo;</li>
+        
+      <li>Algorithms</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api_documentation/disropt.algorithms.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="algorithms">
+<h1>Algorithms<a class="headerlink" href="#algorithms" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="disropt.algorithms.consensus.html">Consensus</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.consensus.html#consensus">Consensus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.consensus.html#asynchronousconsensus">AsynchronousConsensus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.consensus.html#blockconsensus">BlockConsensus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.consensus.html#pushsumconsensus">PushSumConsensus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.consensus.html#constraintconsensus">ConstraintConsensus</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="disropt.algorithms.subgradient.html">(Sub)gradient algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.subgradient.html#distributed-projected-sub-gradient-method">Distributed projected (Sub)gradient Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.subgradient.html#randomized-block-sub-gradient-method">Randomized Block (Sub)gradient Method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.subgradient.html#distributed-gradient-tracking">Distributed Gradient Tracking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.subgradient.html#distributed-gradient-tracking-over-directed-unbalanced-graphs">Distributed Gradient Tracking (over directed, unbalanced graphs)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="disropt.algorithms.dual.html">Dual and Primal/Dual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.dual.html#distributed-dual-decomposition">Distributed dual decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.dual.html#distributed-admm">Distributed ADMM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.dual.html#distributed-dual-subgradient-method">Distributed dual subgradient method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.dual.html#distributed-primal-decomposition">Distributed primal decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.dual.html#asymm-beta">ASYMM (beta)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="disropt.algorithms.setmembership.html">Set membership algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.setmembership.html#distributed-set-membership">Distributed Set Membership</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.setmembership.html#asynchronous-distributed-set-membership">Asynchronous Distributed Set Membership</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="disropt.algorithms.misc.html">Miscellaneous</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.misc.html#distributed-logic-and">Distributed Logic-And</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.misc.html#asynchronous-distributed-logic-and">Asynchronous Distributed Logic-And</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Algorithm</p>
+<dl class="class">
+<dt id="disropt.algorithms.Algorithm">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.algorithms.</code><code class="sig-name descname">Algorithm</code><span class="sig-paren">(</span><em class="sig-param">agent</em>, <em class="sig-param">enable_log=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/algorithms/algorithm.html#Algorithm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.algorithms.Algorithm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Algorithm abstract class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>agent</strong> (<a class="reference internal" href="disropt.agents.html#disropt.agents.Agent" title="disropt.agents.Agent"><em>Agent</em></a>) – agent to execute the algorithm</p></li>
+<li><p><strong>enable_log</strong> (<em>bool</em>) – True for enabling log</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="disropt.algorithms.Algorithm.agent">
+<code class="sig-name descname">agent</code><a class="headerlink" href="#disropt.algorithms.Algorithm.agent" title="Permalink to this definition">¶</a></dt>
+<dd><p>agent to execute the algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="disropt.agents.html#disropt.agents.Agent" title="disropt.agents.Agent">Agent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.algorithms.Algorithm.sequence">
+<code class="sig-name descname">sequence</code><a class="headerlink" href="#disropt.algorithms.Algorithm.sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>sequence of data generated by the algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.algorithms.Algorithm.enable_log">
+<code class="sig-name descname">enable_log</code><a class="headerlink" href="#disropt.algorithms.Algorithm.enable_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>True for enabling log</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.algorithms.Algorithm.get_result">
+<code class="sig-name descname">get_result</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/algorithms/algorithm.html#Algorithm.get_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.algorithms.Algorithm.get_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the solution</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.algorithms.Algorithm.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/algorithms/algorithm.html#Algorithm.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.algorithms.Algorithm.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the algorithm</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="disropt.algorithms.consensus.html" class="btn btn-neutral float-right" title="Consensus Algorithms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="disropt.communicators.html" class="btn btn-neutral float-left" title="Communicators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, OPT4SMART
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

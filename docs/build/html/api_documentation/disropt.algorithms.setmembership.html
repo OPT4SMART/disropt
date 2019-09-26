@@ -1,0 +1,476 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Set Membership Algorithms &mdash; disropt 0.0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Miscellaneaous Algorithms" href="disropt.algorithms.misc.html" />
+    <link rel="prev" title="Dual and Primal/Dual algorithms" href="disropt.algorithms.dual.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> disropt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quick start</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="disropt.agents.html"> Agents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.communicators.html"> Communicator</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="disropt.algorithms.html"> Algorithms</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="disropt.algorithms.consensus.html">Consensus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="disropt.algorithms.subgradient.html">(Sub)gradient algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="disropt.algorithms.dual.html">Dual and Primal/Dual</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Set membership algorithms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#distributed-set-membership">Distributed Set Membership</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#asynchronous-distributed-set-membership">Asynchronous Distributed Set Membership</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="disropt.algorithms.misc.html">Miscellaneous</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.functions.html"> Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.constraints.html"> Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.problems.html"> Problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.utils.html"> Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/index.html">Advanced features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgements/index.html">Acknowledgements</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">disropt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">API Documentation</a> &raquo;</li>
+        
+          <li><a href="disropt.algorithms.html">Algorithms</a> &raquo;</li>
+        
+      <li>Set Membership Algorithms</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api_documentation/disropt.algorithms.setmembership.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="set-membership-algorithms">
+<h1>Set Membership Algorithms<a class="headerlink" href="#set-membership-algorithms" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="distributed-set-membership">
+<h2>Distributed Set Membership<a class="headerlink" href="#distributed-set-membership" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="alg-set-membership"></span><dl class="class">
+<dt id="disropt.algorithms.setmembership.SetMembership">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.algorithms.setmembership.</code><code class="sig-name descname">SetMembership</code><span class="sig-paren">(</span><em class="sig-param">agent</em>, <em class="sig-param">initial_condition</em>, <em class="sig-param">enable_log=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/algorithms/setmembership.html#SetMembership"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.algorithms.setmembership.SetMembership" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="disropt.algorithms.consensus.html#disropt.algorithms.consensus.Consensus" title="disropt.algorithms.consensus.Consensus"><code class="xref py py-class docutils literal notranslate"><span class="pre">disropt.algorithms.consensus.Consensus</span></code></a></p>
+<p>Distributed Set Membership Algorithm <a class="reference internal" href="#faga18" id="id1"><span>[FaGa18]</span></a></p>
+<p>From the perspective of agent <span class="math notranslate nohighlight">\(i\)</span> the algorithm works as follows. For <span class="math notranslate nohighlight">\(k=0,1,\dots\)</span></p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}X_i^{k+1} &amp;= X_i^k \cap M_i^{k+1}\\z_i^{k} &amp;= \sum_{j=1}^N w_{ij} x_j^k\\x_i^{k+1} &amp;= \Pi_{X_i^{k+1}}[z_i^k]\end{aligned}\end{align} \]</div>
+<p>where <span class="math notranslate nohighlight">\(x_i,z_i\in\mathbb{R}^n\)</span>, <span class="math notranslate nohighlight">\(M_i^{k+1},X_i^{k+1}\subseteq\mathbb{R}^n\)</span> are the current feasible (measurement) set and the feasible (parameter) set respectively, and <span class="math notranslate nohighlight">\(\Pi_X[]\)</span> denotes the projection operator over the set <span class="math notranslate nohighlight">\(X\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>agent</strong> (<a class="reference internal" href="disropt.agents.html#disropt.agents.Agent" title="disropt.agents.Agent"><em>Agent</em></a>) – agent to execute the algorithm (must be a Agent)</p></li>
+<li><p><strong>initial_condition</strong> (<em>numpy.ndarray</em>) – initial condition</p></li>
+<li><p><strong>enable_log</strong> (<em>bool</em>) – True for enabling log</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="disropt.algorithms.setmembership.SetMembership.agent">
+<code class="sig-name descname">agent</code><a class="headerlink" href="#disropt.algorithms.setmembership.SetMembership.agent" title="Permalink to this definition">¶</a></dt>
+<dd><p>agent to execute the algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="disropt.agents.html#disropt.agents.Agent" title="disropt.agents.Agent">Agent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.algorithms.setmembership.SetMembership.x0">
+<code class="sig-name descname">x0</code><a class="headerlink" href="#disropt.algorithms.setmembership.SetMembership.x0" title="Permalink to this definition">¶</a></dt>
+<dd><p>initial condition</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.algorithms.setmembership.SetMembership.x">
+<code class="sig-name descname">x</code><a class="headerlink" href="#disropt.algorithms.setmembership.SetMembership.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>current value of the local solution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.algorithms.setmembership.SetMembership.shape">
+<code class="sig-name descname">shape</code><a class="headerlink" href="#disropt.algorithms.setmembership.SetMembership.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>shape of the variable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.algorithms.setmembership.SetMembership.x_neigh">
+<code class="sig-name descname">x_neigh</code><a class="headerlink" href="#disropt.algorithms.setmembership.SetMembership.x_neigh" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary containing the local solution of the (in-)neighbors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.algorithms.setmembership.SetMembership.enable_log">
+<code class="sig-name descname">enable_log</code><a class="headerlink" href="#disropt.algorithms.setmembership.SetMembership.enable_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>True for enabling log</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.algorithms.setmembership.SetMembership.measure">
+<code class="sig-name descname">measure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/algorithms/setmembership.html#SetMembership.measure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.algorithms.setmembership.SetMembership.measure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a new measurement and updates parameter_set</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.algorithms.setmembership.SetMembership.set_measure_generator">
+<code class="sig-name descname">set_measure_generator</code><span class="sig-paren">(</span><em class="sig-param">generator</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/algorithms/setmembership.html#SetMembership.set_measure_generator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.algorithms.setmembership.SetMembership.set_measure_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>set the measure generator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>generator</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – measure generator</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="asynchronous-distributed-set-membership">
+<h2>Asynchronous Distributed Set Membership<a class="headerlink" href="#asynchronous-distributed-set-membership" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disropt.algorithms.setmembership.AsynchronousSetMembership">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.algorithms.setmembership.</code><code class="sig-name descname">AsynchronousSetMembership</code><span class="sig-paren">(</span><em class="sig-param">agent</em>, <em class="sig-param">initial_condition</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/algorithms/setmembership.html#AsynchronousSetMembership"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.algorithms.setmembership.AsynchronousSetMembership" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="disropt.algorithms.consensus.html#disropt.algorithms.consensus.AsynchronousConsensus" title="disropt.algorithms.consensus.AsynchronousConsensus"><code class="xref py py-class docutils literal notranslate"><span class="pre">disropt.algorithms.consensus.AsynchronousConsensus</span></code></a></p>
+<p>Asynchronous Distributed Set Membership Algorithm <a class="reference internal" href="#faga19" id="id2"><span>[FaGa19]</span></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>agent</strong> (<a class="reference internal" href="disropt.agents.html#disropt.agents.Agent" title="disropt.agents.Agent"><em>Agent</em></a>) – agent to execute the algorithm (must be a Agent)</p></li>
+<li><p><strong>initial_condition</strong> (<em>numpy.ndarray</em>) – initial condition</p></li>
+<li><p><strong>enable_log</strong> (<em>bool</em>) – True for enabling log</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="disropt.algorithms.setmembership.AsynchronousSetMembership.agent">
+<code class="sig-name descname">agent</code><a class="headerlink" href="#disropt.algorithms.setmembership.AsynchronousSetMembership.agent" title="Permalink to this definition">¶</a></dt>
+<dd><p>agent to execute the algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="disropt.agents.html#disropt.agents.Agent" title="disropt.agents.Agent">Agent</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.algorithms.setmembership.AsynchronousSetMembership.x0">
+<code class="sig-name descname">x0</code><a class="headerlink" href="#disropt.algorithms.setmembership.AsynchronousSetMembership.x0" title="Permalink to this definition">¶</a></dt>
+<dd><p>initial condition</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.algorithms.setmembership.AsynchronousSetMembership.x">
+<code class="sig-name descname">x</code><a class="headerlink" href="#disropt.algorithms.setmembership.AsynchronousSetMembership.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>current value of the local solution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.algorithms.setmembership.AsynchronousSetMembership.shape">
+<code class="sig-name descname">shape</code><a class="headerlink" href="#disropt.algorithms.setmembership.AsynchronousSetMembership.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>shape of the variable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.algorithms.setmembership.AsynchronousSetMembership.x_neigh">
+<code class="sig-name descname">x_neigh</code><a class="headerlink" href="#disropt.algorithms.setmembership.AsynchronousSetMembership.x_neigh" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary containing the local solution of the (in-)neighbors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.algorithms.setmembership.AsynchronousSetMembership.enable_log">
+<code class="sig-name descname">enable_log</code><a class="headerlink" href="#disropt.algorithms.setmembership.AsynchronousSetMembership.enable_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>True for enabling log</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.algorithms.setmembership.AsynchronousSetMembership.timestamp_sequence">
+<code class="sig-name descname">timestamp_sequence</code><a class="headerlink" href="#disropt.algorithms.setmembership.AsynchronousSetMembership.timestamp_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of timestamps</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.algorithms.setmembership.AsynchronousSetMembership.measure">
+<code class="sig-name descname">measure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/algorithms/setmembership.html#AsynchronousSetMembership.measure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.algorithms.setmembership.AsynchronousSetMembership.measure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a new measurement and updates parameter_set</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.algorithms.setmembership.AsynchronousSetMembership.set_measure_generator">
+<code class="sig-name descname">set_measure_generator</code><span class="sig-paren">(</span><em class="sig-param">generator</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/algorithms/setmembership.html#AsynchronousSetMembership.set_measure_generator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.algorithms.setmembership.AsynchronousSetMembership.set_measure_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>set the measure generator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>generator</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – measure generator</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="faga18"><span class="brackets"><a class="fn-backref" href="#id1">FaGa18</a></span></dt>
+<dd><p>Farina, Francesco; Garulli, Andrea; Giannitrapani, Antonio: Distributed interpolatory algorithms for set membership estimation: IEEE Transactions on Automatic Control (2018).</p>
+</dd>
+<dt class="label" id="faga19"><span class="brackets"><a class="fn-backref" href="#id2">FaGa19</a></span></dt>
+<dd><p>Farina, Francesco; Garulli, Andrea; Giannitrapani, Antonio: Distributed set membership estimation with time-varying graph topology: IEEE Control and Decision Conference (2019). To appear.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="disropt.algorithms.misc.html" class="btn btn-neutral float-right" title="Miscellaneaous Algorithms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="disropt.algorithms.dual.html" class="btn btn-neutral float-left" title="Dual and Primal/Dual algorithms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, OPT4SMART
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

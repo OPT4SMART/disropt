@@ -1,0 +1,539 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Constraint-coupled: charging of Plug-in Electric Vehicles (PEVs) &mdash; disropt 0.0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="API Documentation" href="../../api_documentation/index.html" />
+    <link rel="prev" title="Common-cost: classification via Support Vector Machine" href="svm.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> disropt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart/index.html">Quick start</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial/index.html">Tutorial</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#basic-examples">Basic examples</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#complex-examples">Complex examples</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="logistic.html">Cost coupled: classification via Logistic Regression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="svm.html">Common cost: classification via Support Vector Machine</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Constraint coupled: charging of Plug-in Electric Vehicles</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#problem-formulation">Problem formulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data-generation-model">Data generation model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-code">Complete code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_documentation/index.html">API Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/index.html">Advanced features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgements/index.html">Acknowledgements</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">disropt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Examples</a> &raquo;</li>
+        
+      <li>Constraint-coupled: charging of Plug-in Electric Vehicles (PEVs)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/examples/complex/pev.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="constraint-coupled-charging-of-plug-in-electric-vehicles-pevs">
+<h1>Constraint-coupled: charging of Plug-in Electric Vehicles (PEVs)<a class="headerlink" href="#constraint-coupled-charging-of-plug-in-electric-vehicles-pevs" title="Permalink to this headline">¶</a></h1>
+<p>For the <a class="reference internal" href="../../tutorial/index.html#tutorial"><span class="std std-ref">constraint-coupled</span></a> set-up, we consider the problem
+of determining an optimal overnight charging schedule for a fleet of Plug-in Electric Vehicles (PEVs).
+The model described in this page is inspired by the model in the paper <a class="reference internal" href="#vues16" id="id1"><span>[VuEs16]</span></a> (we consider the
+“charge-only” case without the integer constraints on the input variables).
+The complete code of this example is given <a class="reference internal" href="#pev-code"><span class="std std-ref">at the end of this page</span></a>.</p>
+<div class="section" id="problem-formulation">
+<h2>Problem formulation<a class="headerlink" href="#problem-formulation" title="Permalink to this headline">¶</a></h2>
+<p>Suppose there is a fleet of <span class="math notranslate nohighlight">\(N\)</span> PEVs (agents) that must be charged by drawing power from
+the same electricity distribution network. Assuming the vehicles are connected to the grid
+at a certain time (e.g., at midnight), the goal is to determine an optimal overnight schedule
+to charge the vehicles, since the electricity price varies during the charging period.</p>
+<p>Formally, we divide the entire charging period into a total of <span class="math notranslate nohighlight">\(T = 24\)</span> time slots,
+each one of duration <span class="math notranslate nohighlight">\(\Delta T = 20\)</span> minutes. For each PEV <span class="math notranslate nohighlight">\(i \in \{1, \ldots, N\}\)</span>,
+the charging power at time step <span class="math notranslate nohighlight">\(k\)</span> is equal to <span class="math notranslate nohighlight">\(P_i u_i(k)\)</span>, where <span class="math notranslate nohighlight">\(u_i(k) \in [0, 1]\)</span>
+is the input to the system and <span class="math notranslate nohighlight">\(P_i\)</span> is the maximum charging power that can be fed to the
+<span class="math notranslate nohighlight">\(i\)</span>-th vehicle.</p>
+<div class="section" id="system-model">
+<h3>System model<a class="headerlink" href="#system-model" title="Permalink to this headline">¶</a></h3>
+<p>The state of charge of the <span class="math notranslate nohighlight">\(i\)</span>-th battery is denoted by <span class="math notranslate nohighlight">\(e_i(k)\)</span>,
+its initial state of charge is <span class="math notranslate nohighlight">\(E_i^\text{init}\)</span>, which by the end of the charging
+period has to attain at least <span class="math notranslate nohighlight">\(E_i^\text{ref}\)</span>. The charging conversion efficiency
+is denoted by <span class="math notranslate nohighlight">\(\zeta_i^\text{u} \triangleq 1 - \zeta_i\)</span>, where <span class="math notranslate nohighlight">\(\zeta_i &gt; 0\)</span>
+encodes the conversion losses. The battery’s capacity limits are denoted by
+<span class="math notranslate nohighlight">\(E_i^\text{min}, E_i^\text{max} \ge 0\)</span>. The system’s dynamics are therefore given by</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}&amp; \: e_i(0) = E_i^\text{init}
+\\
+&amp; \: e_i(k+1) = e_i(k) + P_i \Delta T \zeta_i^u u_i(k), \hspace{0.5cm} k \in \{0, \ldots, T-1\}
+\\
+&amp; \: e_i(T) \ge E_i^\text{ref}
+\\
+&amp; \: E_i^\text{min} \le e_i(k) \le E_i^\text{max}, \hspace{2.88cm} k \in \{1, \ldots, T\}
+\\
+&amp; \: u_i(k) \in [0,1], \hspace{4.47cm} k \in \{0, \ldots, T-1\}.\end{split}\]</div>
+<p>To model congestion avoidance of the power grid, we further consider the following (linear)
+coupling constraints among all the variables</p>
+<div class="math notranslate nohighlight">
+\[\sum_{i=1}^N P_i u_i(k) \le P^\text{max}, \hspace{1cm} k \in \{0, \ldots, T-1\},\]</div>
+<p>where <span class="math notranslate nohighlight">\(P^\text{max}\)</span> is the maximum power that the be drawn from the grid.</p>
+</div>
+<div class="section" id="optimization-problem">
+<h3>Optimization problem<a class="headerlink" href="#optimization-problem" title="Permalink to this headline">¶</a></h3>
+<p>We assume that, at each time slot <span class="math notranslate nohighlight">\(k\)</span>, electricity has unit cost equal to
+<span class="math notranslate nohighlight">\(C^\text{u}(k)\)</span>. Since the goal is to minimize the overall consumed energy price,
+the global optimization problem can be posed as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\min_{u, e} \: &amp; \: \sum_{i=1}^N \sum_{k=0}^{T-1} C^\text{u}(k) P_i u_i(k)
+\\
+\text{subject to} \: &amp; \: \sum_{i=1}^N P_i u_i(k) \le P^\text{max}, \hspace{1cm} k \in \{0, \ldots, T-1\}
+\\
+&amp; \: (u_i, e_i) \in X_i, \hspace{2.4cm} \: i \in \{1, \ldots, N\}.\end{split}\]</div>
+<p>The problem is recognized to be a <a class="reference internal" href="../../tutorial/index.html#tutorial"><span class="std std-ref">constraint-coupled</span></a> problem,
+with local variables <span class="math notranslate nohighlight">\(x_i\)</span> equal to the stack of <span class="math notranslate nohighlight">\(e_i(k), u_i(k)\)</span> for <span class="math notranslate nohighlight">\(k \in \{0, \ldots, T-1\}\)</span>,
+plus <span class="math notranslate nohighlight">\(e_i(T)\)</span>. The local objective function is equal to</p>
+<div class="math notranslate nohighlight">
+\[f_i(x_i) = \sum_{k=0}^{T-1} P_i u_i(k) C^\text{u}(k),\]</div>
+<p>the local constraint set is equal to</p>
+<div class="math notranslate nohighlight">
+\[X_i = \{(e_i, u_i) \in \mathbb{R}^{T+1} \times \mathbb{R}^T \text{ such that local dynamics is satisfied} \}\]</div>
+<p>and the local coupling constraint function <span class="math notranslate nohighlight">\(g_i : \mathbb{R}^{2T+1} \rightarrow \mathbb{R}^T\)</span> has components</p>
+<div class="math notranslate nohighlight">
+\[g_{i,k}(x_i) = P_i u_i(k) - \frac{P^\text{max}}{N}, \hspace{1cm} k \in \{0, \ldots, T-1\}.\]</div>
+<p>The goal is to make each agent compute its portion <span class="math notranslate nohighlight">\(x_i^\star = (e_i^\star, u_i^\star)\)</span>
+of an optimal solution <span class="math notranslate nohighlight">\((x_1^\star, \ldots, x_N^\star)\)</span> of the optimization problem,
+so that all of them can know their own assignment of the optimal charging schedule, given by
+<span class="math notranslate nohighlight">\((u_i^\star(0), \ldots, u_i^\star(T-1))\)</span>.</p>
+</div>
+</div>
+<div class="section" id="data-generation-model">
+<h2>Data generation model<a class="headerlink" href="#data-generation-model" title="Permalink to this headline">¶</a></h2>
+<p>The data are generated according to table in <a class="reference internal" href="#vues16" id="id2"><span>[VuEs16]</span></a> (see Appendix).</p>
+</div>
+<div class="section" id="complete-code">
+<h2>Complete code<a class="headerlink" href="#complete-code" title="Permalink to this headline">¶</a></h2>
+<div class="literal-block-wrapper docutils container" id="id3">
+<span id="pev-code"></span><div class="code-block-caption"><span class="caption-text">examples/setups/pev/launcher.py</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">###############################################################</span>
+<span class="c1"># CONSTRAINT-COUPLED Example</span>
+<span class="c1"># Charging of Plug-in Electric Vehicles (PEVs)</span>
+<span class="c1">#</span>
+<span class="c1"># The problem consists of finding an optimal overnight schedule to</span>
+<span class="c1"># charge electric vehicles. See [Vu16] for the problem model</span>
+<span class="c1"># and generation parameters.</span>
+<span class="c1">#</span>
+<span class="c1"># Note: in this example we consider the &quot;charging-only&quot; case</span>
+<span class="c1">###############################################################</span>
+<span class="c1"># Compared Algorithms:</span>
+<span class="c1">#</span>
+<span class="c1"># - Distributed Dual Subgradient</span>
+<span class="c1"># - Distributed Primal Decomposition</span>
+<span class="c1">###############################################################</span>
+
+<span class="kn">import</span> <span class="nn">dill</span> <span class="k">as</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="k">import</span> <span class="n">uniform</span> <span class="k">as</span> <span class="n">rnd</span>
+<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="k">import</span> <span class="n">MPI</span>
+<span class="kn">from</span> <span class="nn">disropt.agents</span> <span class="k">import</span> <span class="n">Agent</span>
+<span class="kn">from</span> <span class="nn">disropt.algorithms</span> <span class="k">import</span> <span class="n">DualSubgradientMethod</span><span class="p">,</span> <span class="n">PrimalDecomposition</span>
+<span class="kn">from</span> <span class="nn">disropt.functions</span> <span class="k">import</span> <span class="n">Variable</span>
+<span class="kn">from</span> <span class="nn">disropt.utils.graph_constructor</span> <span class="k">import</span> <span class="n">binomial_random_graph</span><span class="p">,</span> <span class="n">metropolis_hastings</span>
+<span class="kn">from</span> <span class="nn">disropt.problems</span> <span class="k">import</span> <span class="n">ConstraintCoupledProblem</span>
+
+<span class="c1"># get MPI info</span>
+<span class="n">NN</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_size</span><span class="p">()</span>
+<span class="n">agent_id</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_rank</span><span class="p">()</span>
+
+<span class="c1"># Generate a common graph (everyone uses the same seed)</span>
+<span class="n">Adj</span> <span class="o">=</span> <span class="n">binomial_random_graph</span><span class="p">(</span><span class="n">NN</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">metropolis_hastings</span><span class="p">(</span><span class="n">Adj</span><span class="p">)</span>
+
+<span class="c1">#####################</span>
+<span class="c1"># Generate problem parameters</span>
+<span class="c1">#####################</span>
+
+<span class="c1"># Problem parameters are generated according to the table in [Vu16]</span>
+
+<span class="c1">#### Common parameters</span>
+
+<span class="n">TT</span> <span class="o">=</span> <span class="mi">24</span> <span class="c1"># number of time windows</span>
+<span class="n">DeltaT</span> <span class="o">=</span> <span class="mi">20</span> <span class="c1"># minutes</span>
+<span class="n">PP_max</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">NN</span> <span class="c1"># kWh</span>
+<span class="n">CC_u</span> <span class="o">=</span> <span class="n">rnd</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span><span class="mi">35</span><span class="p">,</span> <span class="p">(</span><span class="n">TT</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="c1"># EUR/MWh - TT entries</span>
+
+<span class="c1">#### Individual parameters</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">agent_id</span><span class="p">)</span>
+
+<span class="n">PP</span> <span class="o">=</span> <span class="n">rnd</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span> <span class="c1"># kW</span>
+<span class="n">EE_min</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># kWh</span>
+<span class="n">EE_max</span> <span class="o">=</span> <span class="n">rnd</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">16</span><span class="p">)</span> <span class="c1"># kWh</span>
+<span class="n">EE_init</span> <span class="o">=</span> <span class="n">rnd</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">EE_max</span> <span class="c1"># kWh</span>
+<span class="n">EE_ref</span> <span class="o">=</span> <span class="n">rnd</span><span class="p">(</span><span class="mf">0.55</span><span class="p">,</span><span class="mf">0.8</span><span class="p">)</span> <span class="o">*</span> <span class="n">EE_max</span> <span class="c1"># kWh</span>
+<span class="n">zeta_u</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">rnd</span><span class="p">(</span><span class="mf">0.015</span><span class="p">,</span> <span class="mf">0.075</span><span class="p">)</span> <span class="c1"># pure number</span>
+
+<span class="c1">#####################</span>
+<span class="c1"># Generate problem object</span>
+<span class="c1">#####################</span>
+
+<span class="c1"># normalize unit measures</span>
+<span class="n">DeltaT</span> <span class="o">=</span> <span class="n">DeltaT</span><span class="o">/</span><span class="mi">60</span> <span class="c1"># minutes  -&gt; hours</span>
+<span class="n">CC_u</span> <span class="o">=</span> <span class="n">CC_u</span><span class="o">/</span><span class="mf">1e3</span>    <span class="c1"># Euro/MWh -&gt; Euro/KWh</span>
+
+<span class="c1"># optimization variables</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">TT</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># stack of e (state of charge) and u (input charging power)</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">TT</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">TT</span><span class="p">,</span> <span class="n">TT</span><span class="o">+</span><span class="mi">1</span><span class="p">))))</span> <span class="o">@</span> <span class="n">z</span> <span class="c1"># T+1 components (from 0 to T)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">TT</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">TT</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">TT</span><span class="p">)))</span> <span class="o">@</span> <span class="n">z</span>   <span class="c1"># T components (from 0 to T-1)</span>
+
+<span class="c1"># objective function</span>
+<span class="n">obj_func</span> <span class="o">=</span> <span class="n">PP</span> <span class="o">*</span> <span class="p">(</span><span class="n">CC_u</span> <span class="o">@</span> <span class="n">u</span><span class="p">)</span>
+
+<span class="c1"># coupling function</span>
+<span class="n">coupling_func</span> <span class="o">=</span> <span class="n">PP</span><span class="o">*</span><span class="n">u</span> <span class="o">-</span> <span class="p">(</span><span class="n">PP_max</span><span class="o">/</span><span class="n">NN</span><span class="p">)</span>
+
+<span class="c1"># local constraints</span>
+<span class="n">e_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">TT</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">e_T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">TT</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">e_0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">e_T</span><span class="p">[</span><span class="n">TT</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">constr</span> <span class="o">=</span> <span class="p">[</span><span class="n">e_0</span> <span class="o">@</span> <span class="n">e</span> <span class="o">==</span> <span class="n">EE_init</span><span class="p">,</span> <span class="n">e_T</span> <span class="o">@</span> <span class="n">e</span> <span class="o">&gt;=</span> <span class="n">EE_ref</span><span class="p">]</span> <span class="c1"># feedback and reference constraints</span>
+
+<span class="k">for</span> <span class="n">kk</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">TT</span><span class="p">):</span>
+    <span class="n">e_cur</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">TT</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">u_cur</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">TT</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">e_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">TT</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">e_cur</span><span class="p">[</span><span class="n">kk</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">u_cur</span><span class="p">[</span><span class="n">kk</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">e_new</span><span class="p">[</span><span class="n">kk</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">constr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_new</span> <span class="o">@</span> <span class="n">e</span> <span class="o">==</span> <span class="n">e_cur</span> <span class="o">@</span> <span class="n">e</span> <span class="o">+</span> <span class="n">PP</span><span class="o">*</span><span class="n">DeltaT</span><span class="o">*</span><span class="n">zeta_u</span><span class="o">*</span><span class="n">u_cur</span> <span class="o">@</span> <span class="n">u</span><span class="p">)</span> <span class="c1"># dynamics</span>
+    <span class="n">constr</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">u_cur</span> <span class="o">@</span> <span class="n">u</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">u_cur</span> <span class="o">@</span> <span class="n">u</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">])</span> <span class="c1"># input constraints</span>
+    <span class="n">constr</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">e_new</span> <span class="o">@</span> <span class="n">e</span> <span class="o">&lt;=</span> <span class="n">EE_max</span><span class="p">,</span> <span class="n">e_new</span> <span class="o">@</span> <span class="n">e</span> <span class="o">&gt;=</span> <span class="n">EE_min</span><span class="p">])</span> <span class="c1"># state constraints</span>
+
+<span class="c1">#####################</span>
+<span class="c1"># Distributed algorithms</span>
+<span class="c1">#####################</span>
+
+<span class="c1"># local agent and problem</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span>
+    <span class="n">in_neighbors</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">Adj</span><span class="p">[</span><span class="n">agent_id</span><span class="p">,</span> <span class="p">:])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+    <span class="n">out_neighbors</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">Adj</span><span class="p">[:,</span> <span class="n">agent_id</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+    <span class="n">in_weights</span><span class="o">=</span><span class="n">W</span><span class="p">[</span><span class="n">agent_id</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+<span class="n">pb</span> <span class="o">=</span> <span class="n">ConstraintCoupledProblem</span><span class="p">(</span><span class="n">obj_func</span><span class="p">,</span> <span class="n">constr</span><span class="p">,</span> <span class="n">coupling_func</span><span class="p">)</span>
+<span class="n">agent</span><span class="o">.</span><span class="n">set_problem</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span>
+
+<span class="c1"># instantiate the algorithms</span>
+<span class="n">y0</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">TT</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">mu0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">TT</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+<span class="n">dds</span> <span class="o">=</span> <span class="n">DualSubgradientMethod</span><span class="p">(</span><span class="n">agent</span><span class="o">=</span><span class="n">agent</span><span class="p">,</span>
+                            <span class="n">initial_condition</span><span class="o">=</span><span class="n">mu0</span><span class="p">,</span>
+                            <span class="n">enable_log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">dpd</span> <span class="o">=</span> <span class="n">PrimalDecomposition</span>  <span class="p">(</span><span class="n">agent</span><span class="o">=</span><span class="n">agent</span><span class="p">,</span>
+                            <span class="n">initial_condition</span><span class="o">=</span><span class="n">y0</span><span class="p">,</span>
+                            <span class="n">M</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                            <span class="n">enable_log</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">step_gen</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="c1"># define a stepsize generator</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="p">((</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mf">0.6</span><span class="p">)</span>
+
+<span class="n">num_iterations</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="c1"># run the algorithms</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">dds_seq</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">iterations</span><span class="o">=</span><span class="n">num_iterations</span><span class="p">,</span> <span class="n">stepsize</span><span class="o">=</span><span class="n">step_gen</span><span class="p">)</span>
+<span class="n">dpd_seq</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dpd</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">iterations</span><span class="o">=</span><span class="n">num_iterations</span><span class="p">,</span> <span class="n">stepsize</span><span class="o">=</span><span class="n">step_gen</span><span class="p">)</span>
+
+<span class="c1"># get results</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">dds_x</span> <span class="o">=</span> <span class="n">dds</span><span class="o">.</span><span class="n">get_result</span><span class="p">()</span>
+<span class="n">dpd_x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dpd</span><span class="o">.</span><span class="n">get_result</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Distributed dual subgradient: agent </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">agent_id</span><span class="p">,</span> <span class="n">dds_x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Distributed primal decomposition: agent </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">agent_id</span><span class="p">,</span> <span class="n">dpd_x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()))</span>
+
+<span class="c1"># save information</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;info.npy&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;N&#39;</span><span class="p">:</span> <span class="n">NN</span><span class="p">,</span> <span class="s1">&#39;iterations&#39;</span><span class="p">:</span> <span class="n">num_iterations</span><span class="p">,</span> <span class="s1">&#39;n_coupling&#39;</span><span class="p">:</span> <span class="n">TT</span><span class="p">})</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;agent_</span><span class="si">{}</span><span class="s1">_objective_func.pkl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">agent_id</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj_func</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;agent_</span><span class="si">{}</span><span class="s1">_coupling_func.pkl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">agent_id</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">coupling_func</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;agent_</span><span class="si">{}</span><span class="s2">_seq_dds.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">agent_id</span><span class="p">),</span> <span class="n">dds_seq</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;agent_</span><span class="si">{}</span><span class="s2">_seq_dpd.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">agent_id</span><span class="p">),</span> <span class="n">dpd_seq</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">examples/setups/pev/results.py</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">disropt.problems</span> <span class="k">import</span> <span class="n">Problem</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="c1"># initialize</span>
+<span class="n">info</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;info.npy&quot;</span><span class="p">)</span>
+<span class="n">NN</span>    <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">N</span>
+<span class="n">iters</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">iterations</span>
+<span class="n">SS</span>    <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">n_coupling</span>
+
+<span class="c1"># load agent data</span>
+<span class="n">seq_dds</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">seq_dpd</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">local_obj_func</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">local_coup_func</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NN</span><span class="p">):</span>
+    <span class="n">seq_dds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;agent_</span><span class="si">{}</span><span class="s2">_seq_dds.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+    <span class="n">seq_dpd</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;agent_</span><span class="si">{}</span><span class="s2">_seq_dpd.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;agent_</span><span class="si">{}</span><span class="s1">_objective_func.pkl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">inp</span><span class="p">:</span>
+        <span class="n">local_obj_func</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;agent_</span><span class="si">{}</span><span class="s1">_coupling_func.pkl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">inp</span><span class="p">:</span>
+        <span class="n">local_coup_func</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+
+<span class="c1"># compute costs and coupling values</span>
+<span class="n">cost_seq_dds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">iters</span><span class="p">)</span>
+<span class="n">cost_seq_dpd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">iters</span><span class="p">)</span>
+<span class="n">coup_seq_dds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">iters</span><span class="p">,</span> <span class="n">SS</span><span class="p">))</span>
+<span class="n">coup_seq_dpd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">iters</span><span class="p">,</span> <span class="n">SS</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iters</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NN</span><span class="p">):</span>
+        <span class="n">cost_seq_dds</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+=</span> <span class="n">local_obj_func</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">seq_dds</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">cost_seq_dpd</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+=</span> <span class="n">local_obj_func</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">seq_dpd</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">coup_seq_dds</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+=</span> <span class="n">local_coup_func</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">seq_dds</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">coup_seq_dpd</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+=</span> <span class="n">local_coup_func</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">seq_dpd</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">,</span> <span class="p">:])</span>
+
+<span class="c1"># plot cost</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Evolution of cost&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;iteration $k$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\sum_{i=1}^N f_i(x_i^k)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">iters</span><span class="p">),</span> <span class="n">cost_seq_dds</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Distributed Dual Subgradient&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">iters</span><span class="p">),</span> <span class="n">cost_seq_dpd</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Distributed Primal Decomposition&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="c1"># plot maximum coupling constraint value</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Evolution of maximum coupling constraint value&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;iteration $k$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\max_</span><span class="si">{s}</span><span class="s2"> \: \sum_{i=1}^N g_</span><span class="si">{is}</span><span class="s2">(x_i^k)$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">iters</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">coup_seq_dds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Distributed Dual Subgradient&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">iters</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">coup_seq_dpd</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Distributed Primal Decomposition&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>The two files can be executed by issuing the following commands in the example folder:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&gt; mpirun -np <span class="m">50</span> --oversubscribe python launcher.py
+&gt; python results.py
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="vues16"><span class="brackets">VuEs16</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
+<dd><p>Vujanic, R., Esfahani, P. M., Goulart, P. J., Mariéthoz, S., &amp; Morari, M. (2016). A decomposition method for large scale MILPs, with performance guarantees and a power system application. Automatica, 67, 144-156.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../api_documentation/index.html" class="btn btn-neutral float-right" title="API Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="svm.html" class="btn btn-neutral float-left" title="Common-cost: classification via Support Vector Machine" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, OPT4SMART
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

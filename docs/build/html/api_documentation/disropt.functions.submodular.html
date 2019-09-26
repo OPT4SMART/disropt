@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>SubmodularFn &mdash; disropt 0.0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Constraints" href="disropt.constraints.html" />
+    <link rel="prev" title="Special Functions" href="disropt.functions.special.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> disropt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quick start</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="disropt.agents.html"> Agents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.communicators.html"> Communicator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.html"> Algorithms</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="disropt.functions.html"> Functions</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="disropt.functions.abstract.html">Abstract Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="disropt.functions.basic.html">Basic Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="disropt.functions.special.html">Special Functions</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Submodular Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.constraints.html"> Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.problems.html"> Problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.utils.html"> Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/index.html">Advanced features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgements/index.html">Acknowledgements</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">disropt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">API Documentation</a> &raquo;</li>
+        
+          <li><a href="disropt.functions.html">Functions</a> &raquo;</li>
+        
+      <li>SubmodularFn</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api_documentation/disropt.functions.submodular.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="submodularfn">
+<h1>SubmodularFn<a class="headerlink" href="#submodularfn" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="disropt.functions.submodular_func.SubmodularFn">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.functions.submodular_func.</code><code class="sig-name descname">SubmodularFn</code><span class="sig-paren">(</span><em class="sig-param">input_shape</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/functions/submodular_func.html#SubmodularFn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.functions.submodular_func.SubmodularFn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="disropt.functions.abstract.html#disropt.functions.abstract_function.AbstractFunction" title="disropt.functions.abstract_function.AbstractFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">disropt.functions.abstract_function.AbstractFunction</span></code></a></p>
+<p>Submodular AbstractFunction abstract class</p>
+<dl class="attribute">
+<dt id="disropt.functions.submodular_func.SubmodularFn.V">
+<code class="sig-name descname">V</code><a class="headerlink" href="#disropt.functions.submodular_func.SubmodularFn.V" title="Permalink to this definition">¶</a></dt>
+<dd><p>ground set</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.functions.submodular_func.SubmodularFn.input_shape">
+<code class="sig-name descname">input_shape</code><a class="headerlink" href="#disropt.functions.submodular_func.SubmodularFn.input_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>cardinality of the ground set</p>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – cardinality of the ground set</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – input_shape must be an integer positive number</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="disropt.functions.submodular_func.SubmodularFn.greedy_polyhedron">
+<code class="sig-name descname">greedy_polyhedron</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">w</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/functions/submodular_func.html#SubmodularFn.greedy_polyhedron"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.functions.submodular_func.SubmodularFn.greedy_polyhedron" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greedy algorithm for finding a maximizer <span class="math notranslate nohighlight">\(x\)</span> of</p>
+<div class="math notranslate nohighlight" id="equation-basepoly">
+<span class="eqno">(1)<a class="headerlink" href="#equation-basepoly" title="Permalink to this equation">¶</a></span>\[\begin{split}    \min_{x\in B(F)}    &amp; w^\top x \\\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(B(F)\)</span> is the base polyhedron associated to the submodular function <span class="math notranslate nohighlight">\(F\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>w</strong> – cost direction</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>maximizer of <a class="reference internal" href="#equation-basepoly">(1)</a></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Input must be a numpy.ndarray with input_shape elements</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.functions.submodular_func.SubmodularFn.subgradient">
+<code class="sig-name descname">subgradient</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/functions/submodular_func.html#SubmodularFn.subgradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.functions.submodular_func.SubmodularFn.subgradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate a subgradient of the Lovasz extension of the
+submodular function at <span class="math notranslate nohighlight">\(x\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> – vector</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>subgradient of the Lovasz extension of <span class="math notranslate nohighlight">\(F\)</span> at <span class="math notranslate nohighlight">\(x\)</span></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Input must be a numpy.ndarray with input_shape elements</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.functions.submodular_func.SubmodularFn.eval">
+<code class="sig-name descname">eval</code><span class="sig-paren">(</span><em class="sig-param">set</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/functions/submodular_func.html#SubmodularFn.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.functions.submodular_func.SubmodularFn.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the submodular function at a given set</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>set</strong> (<em>numpy.ndarray</em><em>(</em><em>, </em><em>dtype='int'</em><em>)</em>) – vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="disropt.constraints.html" class="btn btn-neutral float-right" title="Constraints" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="disropt.functions.special.html" class="btn btn-neutral float-left" title="Special Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, OPT4SMART
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

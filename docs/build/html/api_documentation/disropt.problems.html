@@ -1,0 +1,602 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Problem Classes &mdash; disropt 0.0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Utilities" href="disropt.utils.html" />
+    <link rel="prev" title="Sets (with project method)" href="disropt.constraints.sets.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> disropt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quick start</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="disropt.agents.html"> Agents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.communicators.html"> Communicator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.html"> Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.functions.html"> Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.constraints.html"> Constraints</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"> Problems</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#problem">Problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linearproblem">LinearProblem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quadraticproblem">QuadraticProblem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#projectionproblem">ProjectionProblem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#constraintcoupledproblem">ConstraintCoupledProblem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#abstractoptimizationproblem">AbstractOptimizationProblem</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.utils.html"> Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/index.html">Advanced features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgements/index.html">Acknowledgements</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">disropt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">API Documentation</a> &raquo;</li>
+        
+      <li>Problem Classes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api_documentation/disropt.problems.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="problem-classes">
+<h1>Problem Classes<a class="headerlink" href="#problem-classes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="problem">
+<h2>Problem<a class="headerlink" href="#problem" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="id1"></span><dl class="class">
+<dt id="disropt.problems.Problem">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.problems.</code><code class="sig-name descname">Problem</code><span class="sig-paren">(</span><em class="sig-param">objective_function=None</em>, <em class="sig-param">constraints=None</em>, <em class="sig-param">force_general_problem=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/problem.html#Problem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.Problem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A generic optimization problem.</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\text{minimize } &amp; f(x)\\\text{subject to } &amp; g(x) \leq 0\\                    &amp; h(x) = 0\end{aligned}\end{align} \]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>objective_function</strong> (<a class="reference internal" href="disropt.functions.abstract.html#disropt.functions.abstract_function.AbstractFunction" title="disropt.functions.abstract_function.AbstractFunction"><em>AbstractFunction</em></a><em>, </em><em>optional</em>) – objective function. Defaults to None.</p></li>
+<li><p><strong>constraints</strong> (<em>list</em><em>, </em><em>optional</em>) – constraints. Defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="disropt.problems.Problem.objective_function">
+<code class="sig-name descname">objective_function</code><a class="headerlink" href="#disropt.problems.Problem.objective_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Objective function to be minimized</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.problems.Problem.constraints">
+<code class="sig-name descname">constraints</code><a class="headerlink" href="#disropt.problems.Problem.constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>constraints</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.problems.Problem.input_shape">
+<code class="sig-name descname">input_shape</code><a class="headerlink" href="#disropt.problems.Problem.input_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>dimension of optimization variable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.problems.Problem.output_shape">
+<code class="sig-name descname">output_shape</code><a class="headerlink" href="#disropt.problems.Problem.output_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>output shape</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.problems.Problem.add_constraint">
+<code class="sig-name descname">add_constraint</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/problem.html#Problem.add_constraint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.Problem.add_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new constraint</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="disropt.constraints.sets.html#disropt.constraints.projection_sets.AbstractSet" title="disropt.constraints.projection_sets.AbstractSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractSet</span></code></a>, <a class="reference internal" href="disropt.constraints.constraints.html#disropt.constraints.constraints.Constraint" title="disropt.constraints.constraints.Constraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Constraint</span></code></a>]) – new constraint</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – constraints must be AbstractSet or Constraint</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.problems.Problem.project_on_constraint_set">
+<code class="sig-name descname">project_on_constraint_set</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/problem.html#Problem.project_on_constraint_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.Problem.project_on_constraint_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the projection of a point onto the constraint set of the problem</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – point to project</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>projected point</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.problems.Problem.set_objective_function">
+<code class="sig-name descname">set_objective_function</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/problem.html#Problem.set_objective_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.Problem.set_objective_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the objective function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference internal" href="disropt.functions.abstract.html#disropt.functions.abstract_function.AbstractFunction" title="disropt.functions.abstract_function.AbstractFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractFunction</span></code></a>) – objective function</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – input must be a AbstractFunction object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.problems.Problem.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param">solver='cvxpy'</em>, <em class="sig-param">return_only_solution=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/problem.html#Problem.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.Problem.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve the problem</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>solution</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="linearproblem">
+<h2>LinearProblem<a class="headerlink" href="#linearproblem" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disropt.problems.LinearProblem">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.problems.</code><code class="sig-name descname">LinearProblem</code><span class="sig-paren">(</span><em class="sig-param">objective_function</em>, <em class="sig-param">constraints=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/linear_problem.html#LinearProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.LinearProblem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">disropt.problems.problem.Problem</span></code></p>
+<p>Solve a Linear programming problem defined as:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\text{minimize } &amp; c^\top x\\\text{subject to } &amp; G x \leq h\\                    &amp; A x = b\end{aligned}\end{align} \]</div>
+<dl class="method">
+<dt id="disropt.problems.LinearProblem.set_objective_function">
+<code class="sig-name descname">set_objective_function</code><span class="sig-paren">(</span><em class="sig-param">objective_function</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/linear_problem.html#LinearProblem.set_objective_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.LinearProblem.set_objective_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>set the objective function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>objective_function</strong> (<a class="reference internal" href="disropt.functions.basic.html#disropt.functions.affine_form.AffineForm" title="disropt.functions.affine_form.AffineForm"><em>AffineForm</em></a>) – objective function</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Objective function must be a AffineForm with output_shape=(1,1)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.problems.LinearProblem.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param">initial_value=None</em>, <em class="sig-param">solver='glpk'</em>, <em class="sig-param">return_only_solution=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/linear_problem.html#LinearProblem.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.LinearProblem.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve the problem</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initial_value</strong> (<em>numpy.ndarray</em><em>)</em><em>, </em><em>optional</em>) – Initial value for warm start. Defaults to None.</p></li>
+<li><p><strong>solver</strong> (<em>str</em><em>, </em><em>optional</em>) – Solver to use [‘glpk’, ‘cvxopt’]. Defaults to ‘glpk’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Unsupported solver</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>solution</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="quadraticproblem">
+<h2>QuadraticProblem<a class="headerlink" href="#quadraticproblem" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disropt.problems.QuadraticProblem">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.problems.</code><code class="sig-name descname">QuadraticProblem</code><span class="sig-paren">(</span><em class="sig-param">objective_function</em>, <em class="sig-param">constraints=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/quadratic_problem.html#QuadraticProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.QuadraticProblem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">disropt.problems.problem.Problem</span></code></p>
+<p>Solve a Quadratic programming problem defined as:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\text{minimize } &amp; x^\top P x + q^\top x + r\\\text{subject to } &amp; G x \leq h\\                    &amp; A x = b\end{aligned}\end{align} \]</div>
+<p>Quadratic problems are currently solved by using CVXOPT or OSQP <a class="reference external" href="https://osqp.org">https://osqp.org</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>objective_function</strong> (<a class="reference internal" href="disropt.functions.basic.html#disropt.functions.quadratic_form.QuadraticForm" title="disropt.functions.quadratic_form.QuadraticForm"><em>QuadraticForm</em></a>) – objective function</p></li>
+<li><p><strong>constraints</strong> (<em>list</em><em>, </em><em>optional</em>) – list of constraints. Defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="disropt.problems.QuadraticProblem.set_constraints">
+<code class="sig-name descname">set_constraints</code><span class="sig-paren">(</span><em class="sig-param">constraints</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/quadratic_problem.html#QuadraticProblem.set_constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.QuadraticProblem.set_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the constraints</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>constraints</strong> (<em>list</em>) – list of constraints</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – a list of affine Constraints must be provided</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.problems.QuadraticProblem.set_objective_function">
+<code class="sig-name descname">set_objective_function</code><span class="sig-paren">(</span><em class="sig-param">objective_function</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/quadratic_problem.html#QuadraticProblem.set_objective_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.QuadraticProblem.set_objective_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>set the objective function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>objective_function</strong> (<a class="reference internal" href="disropt.functions.basic.html#disropt.functions.quadratic_form.QuadraticForm" title="disropt.functions.quadratic_form.QuadraticForm"><em>QuadraticForm</em></a>) – objective function</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Objective function must be a QuadraticForm</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.problems.QuadraticProblem.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param">initial_value=None</em>, <em class="sig-param">solver='osqp'</em>, <em class="sig-param">return_only_solution=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/quadratic_problem.html#QuadraticProblem.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.QuadraticProblem.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve the problem</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initial_value</strong> (<em>numpy.ndarray</em><em>)</em><em>, </em><em>optional</em>) – Initial value for warm start. Defaults to None.</p></li>
+<li><p><strong>solver</strong> (<em>str</em><em>, </em><em>optional</em>) – Solver to use (‘osqp’ or ‘cvxopt’). Defaults to ‘osqp’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Unsupported solver, only ‘osqp’ and ‘cvxopt’ are currently supported</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>solution</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="projectionproblem">
+<h2>ProjectionProblem<a class="headerlink" href="#projectionproblem" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disropt.problems.ProjectionProblem">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.problems.</code><code class="sig-name descname">ProjectionProblem</code><span class="sig-paren">(</span><em class="sig-param">constraints_list</em>, <em class="sig-param">point</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/projection_problem.html#ProjectionProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.ProjectionProblem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">disropt.problems.problem.Problem</span></code></p>
+<p>Computes the projection of a point onto some constraints, i.e., it solves</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\text{minimize } &amp; \frac{1}{2}\| x - p \|^2\\\text{subject to } &amp; f_k(x)\leq 0, \, k=1,...\end{aligned}\end{align} \]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>constraints_list</strong> (<em>list</em>) – list of constraints</p></li>
+<li><p><strong>point</strong> (<em>numpy.ndarray</em>) – point <span class="math notranslate nohighlight">\(p\)</span> to project</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="disropt.problems.ProjectionProblem.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/projection_problem.html#ProjectionProblem.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.ProjectionProblem.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>solve the problem</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>solution</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="constraintcoupledproblem">
+<h2>ConstraintCoupledProblem<a class="headerlink" href="#constraintcoupledproblem" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disropt.problems.ConstraintCoupledProblem">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.problems.</code><code class="sig-name descname">ConstraintCoupledProblem</code><span class="sig-paren">(</span><em class="sig-param">objective_function=None</em>, <em class="sig-param">constraints=None</em>, <em class="sig-param">coupling_function=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/constraint_coupled_problem.html#ConstraintCoupledProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.ConstraintCoupledProblem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">disropt.problems.problem.Problem</span></code></p>
+<p>A local part of a constraint-coupled problem.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>objective_function</strong> (<a class="reference internal" href="disropt.functions.abstract.html#disropt.functions.abstract_function.AbstractFunction" title="disropt.functions.abstract_function.AbstractFunction"><em>AbstractFunction</em></a><em>, </em><em>optional</em>) – Local objective function. Defaults to None.</p></li>
+<li><p><strong>constraints</strong> (<em>list</em><em>, </em><em>optional</em>) – Local constraints. Defaults to None.</p></li>
+<li><p><strong>coupling_function</strong> (<a class="reference internal" href="disropt.functions.abstract.html#disropt.functions.abstract_function.AbstractFunction" title="disropt.functions.abstract_function.AbstractFunction"><em>AbstractFunction</em></a><em>, </em><em>optional</em>) – Local function contributing to coupling constraints. Defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="disropt.problems.ConstraintCoupledProblem.objective_function">
+<code class="sig-name descname">objective_function</code><a class="headerlink" href="#disropt.problems.ConstraintCoupledProblem.objective_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Objective function to be minimized</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.problems.ConstraintCoupledProblem.constraints">
+<code class="sig-name descname">constraints</code><a class="headerlink" href="#disropt.problems.ConstraintCoupledProblem.constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Local constraints</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="disropt.constraints.sets.html#disropt.constraints.projection_sets.AbstractSet" title="disropt.constraints.projection_sets.AbstractSet">AbstractSet</a> or <a class="reference internal" href="disropt.constraints.constraints.html#disropt.constraints.constraints.Constraint" title="disropt.constraints.constraints.Constraint">Constraint</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.problems.ConstraintCoupledProblem.coupling_function">
+<code class="sig-name descname">coupling_function</code><a class="headerlink" href="#disropt.problems.ConstraintCoupledProblem.coupling_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Local function contributing to coupling constraints</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">coupling_function</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="disropt.problems.ConstraintCoupledProblem.set_coupling_function">
+<code class="sig-name descname">set_coupling_function</code><span class="sig-paren">(</span><em class="sig-param">fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/problems/constraint_coupled_problem.html#ConstraintCoupledProblem.set_coupling_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.ConstraintCoupledProblem.set_coupling_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the coupling constraint function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference internal" href="disropt.functions.abstract.html#disropt.functions.abstract_function.AbstractFunction" title="disropt.functions.abstract_function.AbstractFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractFunction</span></code></a>) – coupling constraint function</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – input must be a AbstractFunction</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="abstractoptimizationproblem">
+<h2>AbstractOptimizationProblem<a class="headerlink" href="#abstractoptimizationproblem" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disropt.problems.AbstractOptimizationProblem">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.problems.</code><code class="sig-name descname">AbstractOptimizationProblem</code><a class="reference internal" href="../_modules/disropt/problems/abstract_opt_problem.html#AbstractOptimizationProblem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.problems.AbstractOptimizationProblem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">disropt.problems.problem.Problem</span></code></p>
+<p>Define a generic abstract optimization problem <a class="reference internal" href="disropt.algorithms.consensus.html#nobu11" id="id2"><span>[NoBu11]</span></a>.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="disropt.utils.html" class="btn btn-neutral float-right" title="Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="disropt.constraints.sets.html" class="btn btn-neutral float-left" title="Sets (with project method)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, OPT4SMART
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

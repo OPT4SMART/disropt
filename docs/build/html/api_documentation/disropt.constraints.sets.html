@@ -1,0 +1,698 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Sets (with project method) &mdash; disropt 0.0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Problem Classes" href="disropt.problems.html" />
+    <link rel="prev" title="Generic constraints" href="disropt.constraints.constraints.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> disropt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart/index.html">Quick start</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="disropt.agents.html"> Agents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.communicators.html"> Communicator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.algorithms.html"> Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.functions.html"> Functions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="disropt.constraints.html"> Constraints</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="disropt.constraints.constraints.html">Generic Constraints</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Sets (with project method)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#abstractset">AbstractSet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#box">Box</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strip">Strip</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#circle">Circle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#circularsector">CircularSector</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.problems.html"> Problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="disropt.utils.html"> Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/index.html">Advanced features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgements/index.html">Acknowledgements</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">disropt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">API Documentation</a> &raquo;</li>
+        
+          <li><a href="disropt.constraints.html">Constraints</a> &raquo;</li>
+        
+      <li>Sets (with project method)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api_documentation/disropt.constraints.sets.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sets-with-project-method">
+<h1>Sets (with project method)<a class="headerlink" href="#sets-with-project-method" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="abstractset">
+<h2>AbstractSet<a class="headerlink" href="#abstractset" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disropt.constraints.projection_sets.AbstractSet">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.constraints.projection_sets.</code><code class="sig-name descname">AbstractSet</code><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#AbstractSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.AbstractSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract constraint set</p>
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.AbstractSet.projection">
+<code class="sig-name descname">projection</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#AbstractSet.projection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.AbstractSet.projection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Project a point onto the set</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.AbstractSet.to_constraints">
+<code class="sig-name descname">to_constraints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#AbstractSet.to_constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.AbstractSet.to_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the set in a list of Constraints</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="box">
+<h2>Box<a class="headerlink" href="#box" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disropt.constraints.projection_sets.Box">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.constraints.projection_sets.</code><code class="sig-name descname">Box</code><span class="sig-paren">(</span><em class="sig-param">lower_bound=None</em>, <em class="sig-param">upper_bound=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#Box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.Box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#disropt.constraints.projection_sets.AbstractSet" title="disropt.constraints.projection_sets.AbstractSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">disropt.constraints.projection_sets.AbstractSet</span></code></a></p>
+<p>Box set</p>
+<p><span class="math notranslate nohighlight">\(X = \{x\mid l\leq x \leq u\}\)</span>
+with <span class="math notranslate nohighlight">\(l,x,u\in \mathbb{R}^{n}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lower_bound</strong> (<em>numpy.ndarray</em><em>, </em><em>optional</em>) – array with lower bounds for each axis. Defaults to None.</p></li>
+<li><p><strong>upper_bound</strong> (<em>numpy.ndarray</em><em>, </em><em>optional</em>) – array with upper bounds for each axis. Defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.Box.lower_bound">
+<code class="sig-name descname">lower_bound</code><a class="headerlink" href="#disropt.constraints.projection_sets.Box.lower_bound" title="Permalink to this definition">¶</a></dt>
+<dd><p>lower bounds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.Box.upper_bound">
+<code class="sig-name descname">upper_bound</code><a class="headerlink" href="#disropt.constraints.projection_sets.Box.upper_bound" title="Permalink to this definition">¶</a></dt>
+<dd><p>upper bounds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.Box.input_shape">
+<code class="sig-name descname">input_shape</code><a class="headerlink" href="#disropt.constraints.projection_sets.Box.input_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>space dimensions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.Box.intersection">
+<code class="sig-name descname">intersection</code><span class="sig-paren">(</span><em class="sig-param">box</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#Box.intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.Box.intersection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the intersection with another box</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>box</strong> (<a class="reference internal" href="#disropt.constraints.projection_sets.Box" title="disropt.constraints.projection_sets.Box"><em>Box</em></a>) – box to compute the intersection with</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Only intersection with another box is supported</p></li>
+<li><p><strong>ValueError</strong> – The two boxex must have the same input_shape</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.Box.projection">
+<code class="sig-name descname">projection</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#Box.projection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.Box.projection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Project a point onto the box</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy.ndarray</em>) – Point to be projected</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>projected point</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.Box.to_constraints">
+<code class="sig-name descname">to_constraints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#Box.to_constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.Box.to_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the set in a list of Constraints</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="strip">
+<h2>Strip<a class="headerlink" href="#strip" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disropt.constraints.projection_sets.Strip">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.constraints.projection_sets.</code><code class="sig-name descname">Strip</code><span class="sig-paren">(</span><em class="sig-param">regressor</em>, <em class="sig-param">shift</em>, <em class="sig-param">width</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#Strip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.Strip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#disropt.constraints.projection_sets.AbstractSet" title="disropt.constraints.projection_sets.AbstractSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">disropt.constraints.projection_sets.AbstractSet</span></code></a></p>
+<p>Strip set</p>
+<p><span class="math notranslate nohighlight">\(X = \{x\mid -w&lt;=|a^\top x - s|&lt;=w\}\)</span>
+with <span class="math notranslate nohighlight">\(a,x\in \mathbb{R}^{n}\)</span> and <span class="math notranslate nohighlight">\(w\in\mathbb{R}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regressor</strong> (<em>numpy.ndarray</em>) – regressor of the strip</p></li>
+<li><p><strong>shift</strong> (<em>float</em>) – shift from the origin</p></li>
+<li><p><strong>width</strong> (<em>float</em>) – width of the strip</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.Strip.regressor">
+<code class="sig-name descname">regressor</code><a class="headerlink" href="#disropt.constraints.projection_sets.Strip.regressor" title="Permalink to this definition">¶</a></dt>
+<dd><p>regressor of the strip</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.Strip.shift">
+<code class="sig-name descname">shift</code><a class="headerlink" href="#disropt.constraints.projection_sets.Strip.shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>shift from the origin</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.Strip.upper">
+<code class="sig-name descname">upper</code><a class="headerlink" href="#disropt.constraints.projection_sets.Strip.upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>upper border (shift + half width)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.Strip.lower">
+<code class="sig-name descname">lower</code><a class="headerlink" href="#disropt.constraints.projection_sets.Strip.lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>lower border (shift - half width)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.Strip.input_shape">
+<code class="sig-name descname">input_shape</code><a class="headerlink" href="#disropt.constraints.projection_sets.Strip.input_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>space dimensions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.Strip.intersection">
+<code class="sig-name descname">intersection</code><span class="sig-paren">(</span><em class="sig-param">strip</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#Strip.intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.Strip.intersection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the intersection with another strip</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>strip</strong> (<a class="reference internal" href="#disropt.constraints.projection_sets.Strip" title="disropt.constraints.projection_sets.Strip"><em>Strip</em></a>) – strip to compute the intersection with</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Only intersection with another strip is supported</p></li>
+<li><p><strong>ValueError</strong> – The two strips must have the same regressor</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.Strip.projection">
+<code class="sig-name descname">projection</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#Strip.projection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.Strip.projection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Project a point onto the strip</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy.ndarray</em>) – Point to be projected</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>projected point</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.Strip.to_constraints">
+<code class="sig-name descname">to_constraints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#Strip.to_constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.Strip.to_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the set in a list of Constraints</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="circle">
+<h2>Circle<a class="headerlink" href="#circle" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disropt.constraints.projection_sets.Circle">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.constraints.projection_sets.</code><code class="sig-name descname">Circle</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#Circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.Circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#disropt.constraints.projection_sets.AbstractSet" title="disropt.constraints.projection_sets.AbstractSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">disropt.constraints.projection_sets.AbstractSet</span></code></a></p>
+<p>Circle set</p>
+<p><span class="math notranslate nohighlight">\(X = \{x\mid \|x - c\|&lt;= r\}\)</span>
+with <span class="math notranslate nohighlight">\(x,c\in \mathbb{R}^{n}\)</span> and <span class="math notranslate nohighlight">\(r\in\mathbb{R}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>numpy.ndarray</em>) – center of the circle</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – radius of the circle</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.Circle.center">
+<code class="sig-name descname">center</code><a class="headerlink" href="#disropt.constraints.projection_sets.Circle.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>center of the circle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.Circle.radius">
+<code class="sig-name descname">radius</code><a class="headerlink" href="#disropt.constraints.projection_sets.Circle.radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>radius of the circle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.Circle.input_shape">
+<code class="sig-name descname">input_shape</code><a class="headerlink" href="#disropt.constraints.projection_sets.Circle.input_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>space dimensions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.Circle.intersection">
+<code class="sig-name descname">intersection</code><span class="sig-paren">(</span><em class="sig-param">circle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#Circle.intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.Circle.intersection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the intersection with another circle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>circle</strong> (<a class="reference internal" href="#disropt.constraints.projection_sets.Circle" title="disropt.constraints.projection_sets.Circle"><em>Circle</em></a>) – circle to compute the intersection with</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Only intersection with another circle is supported</p></li>
+<li><p><strong>ValueError</strong> – The two circles must have the same center</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.Circle.projection">
+<code class="sig-name descname">projection</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#Circle.projection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.Circle.projection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Project a point onto the circle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy.ndarray</em>) – Point to be projected</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>projected point</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.Circle.to_constraints">
+<code class="sig-name descname">to_constraints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#Circle.to_constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.Circle.to_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the set in a list of Constraints</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="circularsector">
+<h2>CircularSector<a class="headerlink" href="#circularsector" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disropt.constraints.projection_sets.CircularSector">
+<em class="property">class </em><code class="sig-prename descclassname">disropt.constraints.projection_sets.</code><code class="sig-name descname">CircularSector</code><span class="sig-paren">(</span><em class="sig-param">vertex</em>, <em class="sig-param">angle</em>, <em class="sig-param">radius</em>, <em class="sig-param">width</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#CircularSector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.CircularSector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#disropt.constraints.projection_sets.AbstractSet" title="disropt.constraints.projection_sets.AbstractSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">disropt.constraints.projection_sets.AbstractSet</span></code></a></p>
+<p>Circular sector set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vertex</strong> (<em>numpy.ndarray</em>) – vertex of the circular sector</p></li>
+<li><p><strong>angle</strong> (<em>float</em>) – direction of the circular sector (in rad)</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – radius of the circular sector</p></li>
+<li><p><strong>width</strong> (<em>float</em>) – width of the circular sector (in rad)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.CircularSector.vertex">
+<code class="sig-name descname">vertex</code><a class="headerlink" href="#disropt.constraints.projection_sets.CircularSector.vertex" title="Permalink to this definition">¶</a></dt>
+<dd><p>vertex of the circular sector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.CircularSector.angle">
+<code class="sig-name descname">angle</code><a class="headerlink" href="#disropt.constraints.projection_sets.CircularSector.angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>direction of the circular sector (in rad)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.CircularSector.radius">
+<code class="sig-name descname">radius</code><a class="headerlink" href="#disropt.constraints.projection_sets.CircularSector.radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>radius of the circular sector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.CircularSector.h_angle">
+<code class="sig-name descname">h_angle</code><a class="headerlink" href="#disropt.constraints.projection_sets.CircularSector.h_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>left border (from the vertex pov) of the circular sector (in rad)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.CircularSector.l_angle">
+<code class="sig-name descname">l_angle</code><a class="headerlink" href="#disropt.constraints.projection_sets.CircularSector.l_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>right border (from the vertex pov) of the circular sector (in rad)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="disropt.constraints.projection_sets.CircularSector.input_shape">
+<code class="sig-name descname">input_shape</code><a class="headerlink" href="#disropt.constraints.projection_sets.CircularSector.input_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>space dimensions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.CircularSector.intersection">
+<code class="sig-name descname">intersection</code><span class="sig-paren">(</span><em class="sig-param">circular_sector</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#CircularSector.intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.CircularSector.intersection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the intersection with another circular sector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>circular_sector</strong> (<a class="reference internal" href="#disropt.constraints.projection_sets.CircularSector" title="disropt.constraints.projection_sets.CircularSector"><em>CircularSector</em></a>) – circula sector to compute the intersection with</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Only intersection with another circular_sector is supported</p></li>
+<li><p><strong>ValueError</strong> – The two circular_sector must have the same vertex</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.CircularSector.projection">
+<code class="sig-name descname">projection</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#CircularSector.projection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.CircularSector.projection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Project a point onto the ciruclar sector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy.ndarray</em>) – Point to be projected</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>projected point</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="disropt.constraints.projection_sets.CircularSector.to_constraints">
+<code class="sig-name descname">to_constraints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/disropt/constraints/projection_sets.html#CircularSector.to_constraints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#disropt.constraints.projection_sets.CircularSector.to_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the set in a list of Constraints</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="disropt.problems.html" class="btn btn-neutral float-right" title="Problem Classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="disropt.constraints.constraints.html" class="btn btn-neutral float-left" title="Generic constraints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, OPT4SMART
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

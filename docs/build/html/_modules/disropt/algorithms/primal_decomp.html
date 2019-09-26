@@ -1,0 +1,396 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>disropt.algorithms.primal_decomp &mdash; disropt 0.0.6 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> disropt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Home</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart/index.html">Quick start</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial/index.html">Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_documentation/index.html">API Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../advanced/index.html">Advanced features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../acknowledgements/index.html">Acknowledgements</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">disropt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>disropt.algorithms.primal_decomp</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for disropt.algorithms.primal_decomp</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">..agents.agent</span> <span class="k">import</span> <span class="n">Agent</span>
+<span class="kn">from</span> <span class="nn">..problems.problem</span> <span class="k">import</span> <span class="n">Problem</span>
+<span class="kn">from</span> <span class="nn">..problems.constraint_coupled_problem</span> <span class="k">import</span> <span class="n">ConstraintCoupledProblem</span>
+<span class="kn">from</span> <span class="nn">.algorithm</span> <span class="k">import</span> <span class="n">Algorithm</span>
+<span class="kn">from</span> <span class="nn">..functions</span> <span class="k">import</span> <span class="n">Variable</span>
+<span class="kn">from</span> <span class="nn">..functions</span> <span class="k">import</span> <span class="n">ExtendedFunction</span>
+<span class="kn">from</span> <span class="nn">..constraints</span> <span class="k">import</span> <span class="n">ExtendedConstraint</span>
+
+
+<div class="viewcode-block" id="PrimalDecomposition"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.dual.html#disropt.algorithms.primal_decomp.PrimalDecomposition">[docs]</a><span class="k">class</span> <span class="nc">PrimalDecomposition</span><span class="p">(</span><span class="n">Algorithm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Distributed primal decomposition.</span>
+
+<span class="sd">    From the perspective of agent :math:`i` the algorithm works as follows.</span>
+
+<span class="sd">    Initialization: :math:`y_i^0` such that :math:`\sum_{i=1}^N y_i^0 = 0`</span>
+<span class="sd">    </span>
+<span class="sd">    For :math:`k=0,1,\\dots`</span>
+
+<span class="sd">    * Compute :math:`((x_i^k, \\rho_i^k), \mu_i^k)` as a primal-dual optimal solution of</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        :nowrap:</span>
+
+<span class="sd">        \\begin{split}</span>
+<span class="sd">        \min_{x_i, \\rho_i} \hspace{1.1cm} &amp; \: f_i(x_i) + M \\rho_i \\\\</span>
+<span class="sd">        \mathrm{subj. to} \: \mu_i: \: &amp; \: g_i(x_i) \le y_i^k + \\rho_i \\boldsymbol{1} \\\\</span>
+<span class="sd">        &amp; \: x_i \in X_i, \\rho_i \ge 0</span>
+<span class="sd">        \\end{split}</span>
+<span class="sd">    </span>
+<span class="sd">    * Gather :math:`\mu_j^k` from :math:`j \in \mathcal{N}_i` and update</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        y_i^{k+1} = y_i^{k} + \\alpha^k \sum_{j \in \mathcal{N}_i} (\mu_i^k - \mu_j^k)</span>
+
+<span class="sd">    where :math:`x_i\\in\\mathbb{R}^{n_i}`, :math:`\mu_i,y_i\\in\\mathbb{R}^S`, :math:`X_i\\subseteq\mathbb{R}^{n_i}` for all :math:`i` and :math:`\\alpha^k` is a positive stepsize.</span>
+
+<span class="sd">    The algorithm has been presented in ????.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO choose ref</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">agent</span><span class="p">:</span> <span class="n">Agent</span><span class="p">,</span> <span class="n">initial_condition</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">enable_log</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PrimalDecomposition</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">enable_log</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="p">,</span> <span class="n">ConstraintCoupledProblem</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The agent must be equipped with a ConstraintCoupledProblem&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">input_shape</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Currently only mono-dimensional objective functions are supported&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">initial_condition</span><span class="o">.</span><span class="n">shape</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Currently only mono-dimensional outputs for coupling functions are supported&quot;</span><span class="p">)</span>
+
+        <span class="c1"># shape of local variable and coupling constraints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_shape</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">input_shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">=</span> <span class="n">initial_condition</span><span class="o">.</span><span class="n">size</span> <span class="c1"># TODO extend to non mono-dimensional case</span>
+
+        <span class="c1"># initialize allocation and primal solution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y0</span> <span class="o">=</span> <span class="n">initial_condition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">initial_condition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># extended versions of objective function, coupling function and constraints (+ 1 variable for rho)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span> <span class="o">=</span> <span class="n">ExtendedFunction</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">objective_function</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coupling_function</span> <span class="o">=</span> <span class="n">ExtendedFunction</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">coupling_function</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_constraints</span> <span class="o">=</span> <span class="n">ExtendedConstraint</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">constraints</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PrimalDecomposition.run"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.dual.html#disropt.algorithms.primal_decomp.PrimalDecomposition.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">stepsize</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">M</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Run the algorithm for a given number of iterations</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            iterations: Number of iterations. Defaults to 1000.</span>
+<span class="sd">            stepsize: If a float is given as input, the stepsize is constant. </span>
+<span class="sd">                                                         If a function is given, it must take an iteration k as input and output the corresponding stepsize.. Defaults to 0.1.</span>
+<span class="sd">            M: Value of the parameter :math:`M`. Defaults to 1000.</span>
+<span class="sd">            verbose: If True print some information during the evolution of the algorithm. Defaults to False.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: The number of iterations must be an int</span>
+<span class="sd">            TypeError: The stepsize must be a float or a callable</span>
+<span class="sd">            TypeError: The parameter M must be a float</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            return a tuple (x, y) with the sequence of primal solutions and allocation estimates if enable_log=True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">iterations</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The number of iterations must be an int&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">stepsize</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="n">callable</span><span class="p">(</span><span class="n">stepsize</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The stepsize must be a float or a function&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The parameter M must be a float&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_log</span><span class="p">:</span>
+            <span class="c1"># initialize sequence of x</span>
+            <span class="n">x_dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterations</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_shape</span><span class="p">:</span>
+                <span class="n">x_dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_sequence</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x_dims</span><span class="p">)</span>
+
+            <span class="c1"># initialize sequence of y</span>
+            <span class="n">y_dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">iterations</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">y_dims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_sequence</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">y_dims</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="c1"># store current allocation</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_log</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">y_sequence</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+
+            <span class="c1"># perform an iteration</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stepsize</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="n">stepsize</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="n">stepsize</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">iterate_run</span><span class="p">(</span><span class="n">stepsize</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="n">M</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="c1"># store primal solution</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_log</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">x_sequence</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+            
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Iteration </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_log</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_sequence</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_sequence</span><span class="p">)</span></div>
+    
+    <span class="k">def</span> <span class="nf">_update_local_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mu</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">mu_neigh</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">stepsize</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the local solution</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            x: current primal solution</span>
+<span class="sd">            mu: current dual solution</span>
+<span class="sd">            mu_neigh: dual solutions of neighbors</span>
+<span class="sd">            stepsize: step-size for update</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">y_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+
+        <span class="k">for</span> <span class="n">mu_j</span> <span class="ow">in</span> <span class="n">mu_neigh</span><span class="p">:</span>
+            <span class="n">y_new</span> <span class="o">+=</span> <span class="n">stepsize</span> <span class="o">*</span> <span class="p">(</span><span class="n">mu</span> <span class="o">-</span> <span class="n">mu_j</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y_new</span>
+    
+<div class="viewcode-block" id="PrimalDecomposition.iterate_run"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.dual.html#disropt.algorithms.primal_decomp.PrimalDecomposition.iterate_run">[docs]</a>    <span class="k">def</span> <span class="nf">iterate_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stepsize</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">M</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run a single iterate of the algorithm</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO extend this function to non mono-dimensional case</span>
+
+        <span class="c1"># build local problem</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="p">,</span><span class="mi">1</span><span class="p">))))</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="n">A_rho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> <span class="p">[[</span><span class="mi">1</span><span class="p">]]))</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="n">rho</span> <span class="o">=</span> <span class="n">A_rho</span> <span class="o">@</span> <span class="n">z</span>
+        <span class="n">alloc_constr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coupling_function</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">A</span> <span class="o">@</span> <span class="n">z</span>
+        <span class="n">rho_constr</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+        <span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span><span class="n">alloc_constr</span><span class="p">,</span> <span class="n">rho_constr</span><span class="p">]</span>
+        <span class="n">constraints</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_constraints</span><span class="p">)</span>
+        <span class="n">obj_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span> <span class="o">+</span> <span class="n">M</span> <span class="o">*</span> <span class="n">rho</span>
+        <span class="n">pb</span> <span class="o">=</span> <span class="n">Problem</span><span class="p">(</span><span class="n">obj_function</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+
+        <span class="c1"># solve problem and save data</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">pb</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">return_only_solution</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;solved&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The local problem could not be solved&quot;</span><span class="p">)</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;solution&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># rho = out[&#39;solution&#39;][-1]</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;dual_variables&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># exchange dual variables with neighbors</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">neighbors_exchange</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+        <span class="n">mu_neigh</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">data</span> <span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_local_solution</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">mu_neigh</span><span class="p">,</span> <span class="n">stepsize</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="PrimalDecomposition.get_result"><a class="viewcode-back" href="../../../api_documentation/disropt.algorithms.dual.html#disropt.algorithms.primal_decomp.PrimalDecomposition.get_result">[docs]</a>    <span class="k">def</span> <span class="nf">get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the current value primal solution and allocation</span>
+<span class="sd">    </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple (primal, allocation) of numpy.ndarray: value of primal solution, value of allocation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, OPT4SMART
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
