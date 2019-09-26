@@ -57,11 +57,11 @@ master_doc = 'index'
 # -- Project information -----------------------------------------------------
 
 project = 'disropt'
-copyright = '2019, OPT4SMART'
-author = 'opt4smart'
+copyright = '2019, Francesco Farina, Andrea Camisa, Andrea Testa, Ivano Notarnicola, Giuseppe Notarstefano'
+author = 'Francesco Farina, Andrea Camisa, Andrea Testa, Ivano Notarnicola, Giuseppe Notarstefano'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.6'
+release = '0.1'
 
 
 # List of patterns, relative to source directory, that match files and
