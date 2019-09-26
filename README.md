@@ -11,7 +11,7 @@
 The aim of this package is to provide an easy way to run distributed optimization algorithms that can 
 be executed by a network of peer copmuting systems.
 
-A comprehensive guide to DISROPT can be found in the [documentation](...)
+A comprehensive guide to DISROPT can be found in the [documentation](https://disropt.readthedocs.io/en/latest/)
 The package is equipped with some commonly used objective functions and constraints which can be directly used.
  
 **DISROPT** currently supports MPI in order to emulate peer-to-peer communication. However, custom communication protocols can be also implemented.
@@ -34,12 +34,15 @@ It relies on
 pip install disropt
 ```
 
-## Quickstart
-* [Distributed optimization introduction](...)
-* [Using functions and constraints](...)
-* [Defining problems](...)
-* [Creating agents](...)
-* [Running algorithmss](...)
+## Getting started
+* [Quickstart](https://disropt.readthedocs.io/en/latest/quickstart/index.html)
+* [Tutorial](https://disropt.readthedocs.io/en/latest/tutorial/index.html)
+  - [Distributed optimization set-ups](https://disropt.readthedocs.io/en/latest/tutorial/setups.html)
+  - [Using functions and constraints](https://disropt.readthedocs.io/en/latest/tutorial/functions_constraints.html)
+  - [Defining local data and problems](https://disropt.readthedocs.io/en/latest/tutorial/problems.html)
+  - [Creating agents](https://disropt.readthedocs.io/en/latest/tutorial/agents.html)
+  - [Algorithms](https://disropt.readthedocs.io/en/latest/tutorial/algorithms.html)
+* [Examples](https://disropt.readthedocs.io/en/latest/examples/index.html)
 
 ## Citing **DISROPT**
 TODO...
@@ -56,6 +59,6 @@ TODO...
 This result is part of a project that has received funding from the European Research Council (ERC) under the European Union's Horizon 2020 research and innovation programme (grant agreement No 638992 - OPT4SMART).
 
 <p style="text-align:center">
-  <img src="./docs/source/_static/logo_ERC.png" width="200" />
-  <img src="./docs/source/_static/logo_OPT4Smart.png" width="200" /> 
+  <img src="docs/source/_static/logo_ERC.png" width="200" />
+  <img src="docs/source/_static/logo_OPT4Smart.png" width="200" /> 
 </p>
