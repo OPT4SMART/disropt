@@ -37,6 +37,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
               'sphinx_autodoc_typehints',
+              'autodoc_mock_imports',
               ]
 napoleon_use_param = True
 
