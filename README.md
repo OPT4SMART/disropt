@@ -2,22 +2,22 @@
 <img src="./docs/source/_static/blocks_bigdata_t.png" alt="logo" width="250px"></img>
 </div> -->
 
-# Welcome to disropt
+# Welcome to DISROPT
 [**Reference docs**](...)
 | [**Install guide**](#installation)
 | [**Quickstart**](#quickstart)
 
-**disropt** is a Python package developed within the excellence research program ERC in the project [OPT4SMART](www.opt4smart.eu).
+**DISROPT** is a Python package developed within the excellence research program ERC in the project [OPT4SMART](www.opt4smart.eu).
 The aim of this package is to provide an easy way to run distributed optimization algorithms that can 
 be executed by a network of peer copmuting systems.
 
-A comprehensive guide to disropt can be found in the [documentation](...)
+A comprehensive guide to DISROPT can be found in the [documentation](...)
 The package is equipped with some commonly used objective functions and constraints which can be directly used.
  
-**disropt** currently supports MPI in order to emulate peer-to-peer communication. However, custom communication protocols can be also implemented.
+**DISROPT** currently supports MPI in order to emulate peer-to-peer communication. However, custom communication protocols can be also implemented.
 
 ## Installation
-**disropt** works on Python 3.7 and requires an MPI implementation to be installed on your system.
+**DISROPT** works on Python 3.7 and requires an MPI implementation to be installed on your system.
 
 It relies on
 
@@ -41,11 +41,11 @@ pip install disropt
 * [Creating agents](...)
 * [Running algorithmss](...)
 
-## Citing **disropt**
+## Citing **DISROPT**
 TODO...
 
 ## Constributors
-**disropt** is developed by
+**DISROPT** is developed by
 [Francesco Farina](https://francescofarina.github.io),
 [Andrea Camisa](https://www.unibo.it/sitoweb/a.camisa),
 [Andrea Testa](http://opt4smart.dei.unibo.it/people/andrea_testa.html),
