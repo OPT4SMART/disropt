@@ -1,0 +1,8 @@
+disroptproject/.vscode
+*.DS_Store
+*.pyc
+*.npy
+*.texpadtmp
+*.pkl
+=======
+disroptproject/docs/build
