@@ -3,7 +3,7 @@
 </div> -->
 
 # Welcome to DISROPT
-[**Reference docs**](...)
+[**Reference docs**](https://disropt.readthedocs.io/en/latest/)
 | [**Install guide**](#installation)
 | [**Quickstart**](#quickstart)
 
