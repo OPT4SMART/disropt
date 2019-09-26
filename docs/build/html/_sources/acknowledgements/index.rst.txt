@@ -1,6 +1,0 @@
-.. _acknowledgements:
-
-Acknowledgements
-=========================
-
-TODO ack progetto
