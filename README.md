@@ -5,9 +5,9 @@
 # Welcome to DISROPT [![Documentation Status](https://readthedocs.org/projects/disropt/badge/?version=latest)](https://disropt.readthedocs.io/en/latest/?badge=latest)
 [**Reference docs**](https://disropt.readthedocs.io/en/latest/)
 | [**Install guide**](#installation)
-| [**Getting started**](#getting_started)
+| [**Getting started**](#getting-started)
 
-**DISROPT** is a Python package developed within the excellence research program ERC in the project [OPT4SMART](www.opt4smart.eu).
+**DISROPT** is a Python package developed within the excellence research program ERC in the project [OPT4SMART](http://www.opt4smart.eu).
 The aim of this package is to provide an easy way to run distributed optimization algorithms that can 
 be executed by a network of peer copmuting systems.
 
@@ -45,7 +45,7 @@ pip install disropt
 * [Examples](https://disropt.readthedocs.io/en/latest/examples/index.html)
 
 ## Citing **DISROPT**
-TODO...
+Coming soon...
 
 ## Constributors
 **DISROPT** is developed by

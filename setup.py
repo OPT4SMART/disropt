@@ -7,11 +7,11 @@ setuptools.setup(
     name="disropt",
     version="0.1",
     author="Francesco Farina, Andrea Camisa, Andrea Testa, Ivano Notarnicola, Giuseppe Notarstefano",
-    author_email="",
+    author_email="franc.farina@unibo.it",
     description="DISROPT: a python framework for distributed optimization",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="",
+    url="https://disropt.github.io/disropt/",
     packages=setuptools.find_packages(),
     install_requires=[
         'numpy>=1.16.3',

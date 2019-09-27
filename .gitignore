@@ -5,4 +5,11 @@ disroptproject/.vscode
 *.texpadtmp
 *.pkl
 =======
-disroptproject/docs/build
+docs/build
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+

@@ -5,7 +5,4 @@ mpi4py>=3.0.1
 numpy>=1.16.3
 osqp>=0.6.1
 scipy>=1.2.1
-Sphinx>=2.1.2
-sphinx-autodoc-typehints>=1.6.0
-sphinx-rtd-theme>=0.4.3
 
