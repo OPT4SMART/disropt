@@ -2,7 +2,7 @@
 <img src="./docs/source/_static/blocks_bigdata_t.png" alt="logo" width="250px"></img>
 </div> -->
 
-# Welcome to DISROPT
+# Welcome to DISROPT [![Documentation Status](https://readthedocs.org/projects/disropt/badge/?version=latest)](https://disropt.readthedocs.io/en/latest/?badge=latest)
 [**Reference docs**](https://disropt.readthedocs.io/en/latest/)
 | [**Install guide**](#installation)
 | [**Getting started**](#getting_started)
