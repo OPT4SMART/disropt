@@ -9,9 +9,9 @@
 
 **DISROPT** is a Python package developed within the excellence research program ERC in the project [OPT4SMART](http://www.opt4smart.eu).
 The aim of this package is to provide an easy way to run distributed optimization algorithms that can 
-be executed by a network of peer copmuting systems.
+be executed by a network of peer computing systems.
 
-A comprehensive guide to DISROPT can be found in the [documentation](https://disropt.readthedocs.io/en/latest/)
+A comprehensive guide to DISROPT can be found in the [documentation](https://disropt.readthedocs.io/en/latest/).
 The package is equipped with some commonly used objective functions and constraints which can be directly used.
  
 **DISROPT** currently supports MPI in order to emulate peer-to-peer communication. However, custom communication protocols can be also implemented.
@@ -55,7 +55,7 @@ Coming soon...
 [Ivano Notarnicola](https://www.unibo.it/sitoweb/ivano.notarnicola), and
 [Giuseppe Notarstefano](https://www.unibo.it/sitoweb/giuseppe.notarstefano)
 
-## Acknoledgements
+## Acknowledgements
 This result is part of a project that has received funding from the European Research Council (ERC) under the European Union's Horizon 2020 research and innovation programme (grant agreement No 638992 - OPT4SMART).
 
 <p style="text-align:center">
