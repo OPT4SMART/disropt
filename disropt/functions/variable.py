@@ -49,3 +49,11 @@ class Variable(AffineForm):
     @check_input
     def eval(self, x: np.ndarray) -> np.ndarray:
         return x.reshape(self.output_shape)
+
+    def _extend_variable(self, n_var, axis, pos):
+        if axis != 0:
+            raise NotImplementedError("Only axis=0 is supported")
+        n = self.input_shape[0]
+        A = np.zeros((n + n_var, n))
+        A[pos:pos+n, :] = np.eye(n)
+        return A @ Variable(n + n_var)

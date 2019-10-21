@@ -47,10 +47,11 @@ class Problem:
                             if check_affine_constraints(constraints):
                                 # Convert to QuadraticProblem
                                 from .quadratic_problem import QuadraticProblem
-                                instance = QuadraticProblem(objective_function, constraints)
+                                instance = QuadraticProblem(objective_function, constraints, is_pos_def=True)
         return instance
 
-    def __init__(self, objective_function: AbstractFunction = None, constraints: list = None, force_general_problem: bool = False):
+    def __init__(self, objective_function: AbstractFunction = None, constraints: list = None,
+                 force_general_problem: bool = False):
         self.objective_function = None
         self.constraints = []
         self.input_shape = None
@@ -99,7 +100,7 @@ class Problem:
                 self.constraints.append(const)
         else:
             raise TypeError("constraints must be AbstractSet or Constraint")
-    
+
     def __split_constraints(self):
         """split the constraints into affine equalities, affine inequalities and nonlinear constraints
 
@@ -204,7 +205,8 @@ class Problem:
                 warnings.warn("CVXPY is not installed. Trying with CVXOPT.")
                 solver = 'cvxopt'
             try:
-                obj = cvx.Minimize(self.objective_function._to_cvxpy())
+                cvxpy_func = self.objective_function._to_cvxpy()
+                obj = cvx.Minimize(cvxpy_func)
                 constraints = []
                 for const in self.constraints:
                     constraints.append(const._to_cvxpy())
@@ -213,6 +215,9 @@ class Problem:
                     pb.solve()
                 except cvx.SolverError:
                     pb.solve(solver='SCS')
+                except RuntimeError:
+                    pb.solve(solver='ECOS')
+
                 sol = np.array(pb.variables()[0].value).reshape(self.input_shape)
                 if not return_only_solution:
                     if pb.status == 'optimal':
@@ -221,8 +226,8 @@ class Problem:
                         status = pb.status
                     dual_variables = {}
                     for idx, const in enumerate(constraints):
-                        dual_variables[idx] = np.array(const.dual_value).reshape(self.input_shape)
-                    
+                        dual_variables[idx] = np.array(const.dual_value).reshape(self.constraints[idx].output_shape)
+
                     output_dict = {
                         'solution': sol,
                         'status': status,
@@ -237,7 +242,7 @@ class Problem:
             except:
                 warnings.warn("CVXPY cannot solve the problem. Trying with CVXOPT.")
                 solver = 'cvxopt'
-                
+
         if solver == 'cvxopt':
             try:
                 import cvxopt

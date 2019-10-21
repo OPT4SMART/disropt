@@ -49,8 +49,8 @@ class QuadraticForm(AbstractFunction):
                 raise ValueError(
                     "Dimension mismatch. Input matrix must have shape {}".format(
                         (fn.output_shape[0], fn.output_shape[0])))
-            if not is_semi_pos_def(P):
-                warnings.warn("Warning, input matrix is not (semi)positive definite")
+            # if not is_semi_pos_def(P):
+            #     warnings.warn("Warning, input matrix is not (semi)positive definite")
         else:
             P = np.eye(fn.output_shape[0])
 
@@ -113,6 +113,9 @@ class QuadraticForm(AbstractFunction):
         import cvxpy as cvx
         fn = self.fn._to_cvxpy()
         return cvx.quad_form(fn, self.P) + self.q.transpose() @ fn + self.r.flatten()
+    
+    def _extend_variable(self, n_var, axis, pos):
+        return QuadraticForm(self.fn._extend_variable(n_var, axis, pos), self.P, self.q, self.r)
 
     def get_parameters(self):
         if self.is_quadratic:

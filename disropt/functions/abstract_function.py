@@ -36,6 +36,9 @@ class AbstractFunction:
     def _to_cvxpy(self):
         pass
 
+    def _extend_variable(self, n_var, axis, pos):
+        pass
+
     def __str__(self):
         description = {'expression': self._expression(),
                        'input shape': self.input_shape,
@@ -330,6 +333,9 @@ class ConstantSumFunction(AbstractFunction):
     def _to_cvxpy(self):
         return self.constant + self.fn._to_cvxpy()
 
+    def _extend_variable(self, n_var, axis, pos):
+        return self.fn._extend_variable(n_var, axis, pos) + self.constant
+
     @check_input
     def jacobian(self, x):
         return self.fn.jacobian(x)
@@ -376,6 +382,9 @@ class SumFunction(AbstractFunction):
     def _to_cvxpy(self):
         return self.f1._to_cvxpy() + self.f2._to_cvxpy()
 
+    def _extend_variable(self, n_var, axis, pos):
+        return self.f1._extend_variable(n_var, axis, pos) + self.f2._extend_variable(n_var, axis, pos)
+
     @check_input
     def eval(self, x):
         return self.f1.eval(x) + self.f2.eval(x)
@@ -415,6 +424,9 @@ class NegFunction(AbstractFunction):
 
     def _to_cvxpy(self):
         return -self.fn._to_cvxpy()
+
+    def _extend_variable(self, n_var, axis, pos):
+        return -self.fn._extend_variable(n_var, axis, pos)
 
     @check_input
     def eval(self, x):
@@ -464,6 +476,9 @@ class MulFunction(AbstractFunction):
     def eval(self, x):
         return self.f1.eval(x) * self.f2.eval(x)
 
+    def _extend_variable(self, n_var, axis, pos):
+        return self.f1._extend_variable(n_var, axis, pos) * self.f2._extend_variable(n_var, axis, pos)
+
     def _to_cvxpy(self):
         return self.f1._to_cvxpy() * self.f2._to_cvxpy()
 
@@ -500,6 +515,9 @@ class ScalarMulFunction(AbstractFunction):
     @check_input
     def eval(self, x):
         return self.scalar * self.fn.eval(x)
+
+    def _extend_variable(self, n_var, axis, pos):
+        return self.scalar * self.fn._extend_variable(n_var, axis, pos)
 
     @check_input
     def jacobian(self, x):
@@ -550,6 +568,9 @@ class MatMulFunction(AbstractFunction):
     def eval(self, x):
         return self.f1.eval(x).transpose() @ self.f2.eval(x)
 
+    def _extend_variable(self, n_var, axis, pos):
+        return MatMulFunction(self.f1._extend_variable(n_var, axis, pos), self.f2._extend_variable(n_var, axis, pos))
+
     def _to_cvxpy(self):
         return self.f1._to_cvxpy().transpose() @ self.f2._to_cvxpy()
 
@@ -598,5 +619,8 @@ class ConstantMatMulFunction(AbstractFunction):
     def eval(self, x):
         return self.constant.transpose() @ self.fn.eval(x)
 
+    def _extend_variable(self, n_var, axis, pos):
+        return ConstantMatMulFunction(self.constant, self.fn._extend_variable(n_var, axis, pos))
+
     def _to_cvxpy(self):
-        return self.constant.transpose()._to_cvxpy() * self.fn._to_cvxpy()
+        return self.constant.transpose() @ self.fn._to_cvxpy()

@@ -1,6 +1,5 @@
 import numpy as np
 from .abstract_function import AbstractFunction
-from .utilities import check_input
 
 
 class SubmodularFn(AbstractFunction):
@@ -36,7 +35,6 @@ class SubmodularFn(AbstractFunction):
                 """
         pass
 
-    @check_input
     def greedy_polyhedron(self, w):
         """Greedy algorithm for finding a maximizer :math:`x` of
 
@@ -63,20 +61,20 @@ class SubmodularFn(AbstractFunction):
         Ind = np.flip(np.argsort(w))
         w = w[Ind]
         x = np.zeros((n, 1))
-
-        Fold = self.eval(np.array([], dtype='int'))
-        A = self.V[Ind[0]]
+        empt = np.array([], dtype='int')
+        Fold = self.eval(empt[:, None])
+        A = np.ones((1, 1), dtype='int')
+        A[0, :] = self.V[Ind[0]]
         x[Ind[0]] = self.eval(A) - Fold
         Fold = Fold + x[Ind[0]]
 
         for i in range(1, n):
-            Anew = np.hstack((A, self.V[Ind[i]]))
+            Anew = np.vstack((A, self.V[Ind[i]]))
             x[Ind[i]] = self.eval(Anew) - Fold
             A = Anew
             Fold = Fold + x[Ind[i]]
         return x
 
-    @check_input
     def subgradient(self, x):
         """
         Evaluate a subgradient of the Lovasz extension of the
@@ -120,11 +118,7 @@ class stCutFn(SubmodularFn):
         """
         super(stCutFn, self).__init__(input_shape)
 
-        if not isinstance(
-            G, np.ndarray) or not (
-            G.shape[0] == G.shape[1]) or not (
-            G.shape[0] == (
-                input_shape + 2)):
+        if not isinstance(G, np.ndarray) or not (G.shape[0] == G.shape[1]) or not (G.shape[0] == (input_shape + 2)):
             raise ValueError(
                 "Input must be a numpy.ndarray with shape {},{}".format(
                     input_shape + 2, input_shape + 2))
@@ -147,15 +141,13 @@ class stCutFn(SubmodularFn):
         """
         if not isinstance(
             A, np.ndarray) or (
-            A.shape[1] > self.input_shape) or (
-                A.shape[0] > 1):
+            A.shape[1] > self.input_shape[1]) or (
+                A.shape[1] > 1):
             raise ValueError(
-                "Input must be a numpy.ndarray with shape at most {},{}".format(
-                    1, self.input_shape))
+                "Input must be a numpy.ndarray with shape at most {}".format(self.input_shape[0]))
 
         n = G.shape[0]
-        A = np.hstack((A, n - 2))  # Add s to set
-        A = np.unique(A)
+        A = np.vstack((A, n-2))  # Add s to set
         G1 = G[:, np.setdiff1d(np.arange(n), A)]
         G2 = G[:, np.setdiff1d(np.arange(n), [n - 2])]
         C = np.sum(G1[A]) - np.sum(G2[n - 2, :])
@@ -171,16 +163,12 @@ class stCutFn(SubmodularFn):
             float: cut value
 
         Raises:
-            ValueError: A must be a numpy.ndarray with size at most (1,input_shape)
+            ValueError: A must be a numpy.ndarray with size at most (|V|, 1)
         """
         # TODO is instace np.ndarray(int)
-        if not isinstance(
-            A, np.ndarray) or (
-            A.shape[1] > self.input_shape) or (
-                A.shape[0] > 1):
+        if not isinstance(A, np.ndarray) or (A.shape[0] > self.input_shape[0]) or (A.shape[1] > 1):
             raise ValueError(
-                "Input must be a numpy.ndarray(dtype=int) with shape at most {},{}".format(
-                    1, self.input_shape))
+                "Input must be a numpy.ndarray(dtype=int) with shape at most {}".format(self.input_shape[0]))
         C = self.eval_cut(self.G, A)
 
         return C

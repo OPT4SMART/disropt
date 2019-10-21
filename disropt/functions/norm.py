@@ -67,7 +67,9 @@ class Norm(AbstractFunction):
 
         if self.order == np.inf:
             return cvx.norm_inf(self.fn._to_cvxpy())
-        
+    
+    def _extend_variable(self, n_var, axis, pos):
+        return Norm(self.fn._extend_variable(n_var, axis, pos), self.order, self.axis)
 
     @check_input
     def eval(self, x: np.ndarray) -> np.ndarray:

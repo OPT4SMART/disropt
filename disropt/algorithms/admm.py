@@ -14,25 +14,25 @@ class ADMM(Algorithm):
     From the perspective of agent :math:`i` the algorithm works as follows.
 
     Initialization: :math:`\lambda_{ij}^0` for all :math:`j \in \mathcal{N}_i`, :math:`\lambda_{ii}^0` and :math:`z_i^0`
-    
+
     For :math:`k=0,1,\\dots`
 
     * Compute :math:`x_i^k` as the optimal solution of
 
     .. math::
         \min_{x_i \in X_i} \: f_i(x_i) + x_i^\\top \sum_{j \in \mathcal{N}_i \cup \\{i\\}} \lambda_{ij}^k + \\frac{\\rho}{2} \sum_{j \in \mathcal{N}_i \cup \\{i\\}} \\| x_i - z_j^t \\|^2
-    
+
     * Gather :math:`x_j^k` and :math:`\lambda_{ji}^k` from neighbors :math:`j \in \mathcal{N}_i`
 
     * Update :math:`z_i^{k+1}`
 
     .. math::
         z_i^{k+1} = \\frac{\sum_{j \in \mathcal{N}_i \cup \\{i\\}} x_j^k}{|\mathcal{N}_i| + 1} + \\frac{\sum_{j \in \mathcal{N}_i \cup \\{i\\}} \lambda_{ji}^k}{\\rho (|\mathcal{N}_i| + 1)}
-    
+
     * Gather :math:`z_j^{k+1}` from neighbors :math:`j \in \mathcal{N}_i`
 
     * Update for all :math:`j \in \mathcal{N}_i`
-    
+
     .. math::
         \lambda_{ij}^{k+1} = \lambda_{ij}^{k} + \\rho (x_i^k - z_j^{k+1})
 
@@ -47,21 +47,22 @@ class ADMM(Algorithm):
 
         if not isinstance(agent.problem, Problem):
             raise TypeError("The agent must be equipped with a Problem")
-        
+
         if sum(1 for i in agent.problem.objective_function.input_shape if i > 1) > 1:
             raise ValueError("Currently only mono-dimensional objective functions are supported")
-        
+
         if not all([isinstance(x, np.ndarray) for _, x in initial_lambda.items()]):
             raise TypeError("The initial condition dictionary can only contain numpy vectors")
-        
+
         # augmented set of neighbors and degree
         self.augmented_neighbors = deepcopy(self.agent.in_neighbors)
         self.augmented_neighbors.append(agent.id)
         self.augmented_neighbors.sort()
         self.degree = len(agent.in_neighbors)
-        
+
         if self.augmented_neighbors != sorted([x for x in initial_lambda]):
-            raise TypeError("The initial condition dictionary must contain exactly one vector per neighbor (plus the agent itself)")
+            raise TypeError(
+                "The initial condition dictionary must contain exactly one vector per neighbor (plus the agent itself)")
 
         # shape of local variable
         self.x_shape = agent.problem.objective_function.input_shape
@@ -73,7 +74,7 @@ class ADMM(Algorithm):
         self.z = initial_z
         self.x = None
 
-    def run(self, iterations: int = 1000, penalty: float = 0.1, verbose: bool=False, **kwargs) -> np.ndarray:
+    def run(self, iterations: int = 1000, penalty: float = 0.1, verbose: bool = False, **kwargs) -> np.ndarray:
         """Run the algorithm for a given number of iterations
 
         Args:
@@ -102,7 +103,7 @@ class ADMM(Algorithm):
             self.lambda_sequence = {}
             for j in self.augmented_neighbors:
                 self.lambda_sequence[j] = np.zeros(x_dims)
-        
+
         self.initialize_algorithm()
 
         for k in range(iterations):
@@ -117,17 +118,17 @@ class ADMM(Algorithm):
             # store primal solution
             if self.enable_log:
                 self.x_sequence[k] = self.x
-            
+
             if verbose:
                 if self.agent.id == 0:
                     print('Iteration {}'.format(k), end="\r")
 
         if self.enable_log:
             return (self.x_sequence, self.lambda_sequence, self.z_sequence)
-    
+
     def _update_local_solution(self, x: np.ndarray, z: np.ndarray, z_neigh: dict, rho: float, **kwargs):
         """Update the local solution
-        
+
         Args:
             x: current solution
             z: current auxiliary primal variable
@@ -140,17 +141,17 @@ class ADMM(Algorithm):
         self.lambd[self.agent.id] += rho * (x - z)
         for j, z_j in z_neigh.items():
             self.lambd[j] += rho * (x - z_j)
-        
+
         # update primal variables
         self.x = x
         self.z = z
-    
+
     def initialize_algorithm(self):
         """Initializes the algorithm
         """
         # exchange z with neighbors
         self.z_neigh = self.agent.neighbors_exchange(self.z)
-    
+
     def iterate_run(self, rho: float, **kwargs):
         """Run a single iterate of the algorithm
         """
@@ -159,15 +160,11 @@ class ADMM(Algorithm):
         # build local problem
         x_i = Variable(self.x_shape[0])
 
-        penaltyterm = QuadraticForm(x_i - self.z, np.eye(self.x_shape[0]))
-        for j in self.agent.in_neighbors:
-            penaltyterm += QuadraticForm(x_i - self.z_neigh[j], np.eye(self.x_shape[0]))
-        
-        sumlambda = self.lambd[self.agent.id]
-        for j in self.agent.in_neighbors:
-            sumlambda += self.lambd[j]
+        penalties = [(x_i - self.z_neigh[j])@(x_i - self.z_neigh[j]) for j in self.agent.in_neighbors]
+        penalties.append((x_i - self.z)@(x_i - self.z))
+        sumlambda = sum(self.lambd.values())
 
-        obj_function = self.agent.problem.objective_function + sumlambda @ x_i + (rho/2) * penaltyterm
+        obj_function = self.agent.problem.objective_function + sumlambda @ x_i + (rho/2) * sum(penalties)
         pb = Problem(obj_function, self.agent.problem.constraints)
 
         # solve problem and save data
@@ -180,16 +177,16 @@ class ADMM(Algorithm):
         # compute auxiliary variable
         z = (sum(x_neigh.values()) + x) / (self.degree+1) + \
             (sum(lambda_neigh.values()) + self.lambd[self.agent.id]) / (rho*(self.degree+1))
-        
+
         # exchange auxiliary variables with neighbors
         z_neigh = self.agent.neighbors_exchange(z)
 
         # update local data
         self._update_local_solution(x, z, z_neigh, rho, **kwargs)
-    
+
     def get_result(self):
         """Return the current value primal solution, dual variable and auxiliary primal variable
-    
+
         Returns:
             tuple (primal, dual, auxiliary): value of primal solution (np.ndarray), dual variables (dictionary of np.ndarray), auxiliary primal variable (np.ndarray)
         """

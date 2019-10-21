@@ -44,11 +44,13 @@ pb = Problem(fn, constr)
 agent.set_problem(pb)
 
 # instantiate the algorithms
-initial_z = np.zeros((n, 1))
-initial_lambda = {local_rank: 10*np.random.rand(n, 1)}
+initial_z = np.ones((n, 1))
+# initial_lambda = {local_rank: 10*np.random.rand(n, 1)}
+initial_lambda = {local_rank: np.ones((n, 1))}
 
 for j in agent.in_neighbors:
-    initial_lambda[j] = 10*np.random.rand(n, 1)
+    # initial_lambda[j] = 10*np.random.rand(n, 1)
+    initial_lambda[j] = np.ones((n, 1))
 
 algorithm = ADMM(agent=agent,
                  initial_lambda=initial_lambda,
@@ -63,6 +65,9 @@ print("Agent {}: primal {} dual {} auxiliary primal {}".format(agent.id, x_t.fla
 np.save("agents.npy", nproc)
 
 # save agent and sequence
+if local_rank == 0:
+    with open('constraints.pkl', 'wb') as output:
+        pickle.dump(constr, output, pickle.HIGHEST_PROTOCOL)
 with open('agent_{}_function.pkl'.format(agent.id), 'wb') as output:
     pickle.dump(agent.problem.objective_function, output, pickle.HIGHEST_PROTOCOL)
 with open('agent_{}_dual_sequence.pkl'.format(agent.id), 'wb') as output:

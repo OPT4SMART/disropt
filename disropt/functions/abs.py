@@ -15,17 +15,16 @@ class Abs(AbstractFunction):
         f(x)=|x|
 
     with :math:`x: \\mathbb{R}^{n}`.
-        
+
     Args:
         fn (AbstractFunction): input function
-        order (int, optional): order of the norm. Can be 1, 2 or np.inf. Defaults to 2.
-    
+
     Raises:
         TypeError: input must be a function object
         NotImplementedError: only 1, 2 and inf norms are currently supported
     """
 
-    def __init__(self, fn: AbstractFunction, order: Union[int, float]=None, axis: int=None):
+    def __init__(self, fn: AbstractFunction):
         if not isinstance(fn, AbstractFunction):
             raise TypeError("Input must be a AbstractFunction object")
         self.fn = fn
@@ -47,14 +46,17 @@ class Abs(AbstractFunction):
         self.quadratic = False
 
         super().__init__()
-    
+
     def _expression(self):
         expression = 'Abs({})'.format(self.fn._expression())
-        return expression 
-    
+        return expression
+
     def _to_cvxpy(self):
         import cvxpy as cvx
         return cvx.abs(self.fn._to_cvxpy())
+
+    def _extend_variable(self, n_var, axis, pos):
+        return Abs(self.fn._extend_variable(n_var, axis, pos))
 
     @check_input
     def eval(self, x: np.ndarray) -> np.ndarray:

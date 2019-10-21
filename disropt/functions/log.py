@@ -47,6 +47,9 @@ class Log(AbstractFunction):
     def _to_cvxpy(self):
         import cvxpy as cvx
         return cvx.log(self.fn._to_cvxpy())
+    
+    def _extend_variable(self, n_var, axis, pos):
+        return Log(self.fn._extend_variable(n_var, axis, pos))
 
     @check_input
     def eval(self, x: np.ndarray) -> np.ndarray:

@@ -5,14 +5,14 @@ from .quadratic_problem import QuadraticProblem
 
 class ProjectionProblem(Problem):
     """Computes the projection of a point onto some constraints, i.e., it solves
-    
+
     .. math::
 
         \\text{minimize } & \\frac{1}{2}\\| x - p \\|^2 
 
         \\text{subject to } & f_k(x)\\leq 0, \\, k=1,...
 
-        
+
     Args:
         constraints_list (list): list of constraints
         point (numpy.ndarray): point :math:`p` to project
@@ -21,8 +21,7 @@ class ProjectionProblem(Problem):
     def __init__(self, constraints_list, point):
         from ..functions import Variable, QuadraticForm
         x = Variable(point.shape[0])
-        P = np.eye(point.shape[0])
-        objective_function = 0.5 * QuadraticForm(x - point, P)
+        objective_function = 0.5 * (x - point) @ (x - point)
         self.point = point
 
         super(ProjectionProblem, self).__init__(objective_function, constraints_list)
@@ -33,7 +32,7 @@ class ProjectionProblem(Problem):
 
     def solve(self):
         """solve the problem
-        
+
         Returns:
             numpy.ndarray: solution
         """
@@ -70,7 +69,7 @@ class ProjectionProblem(Problem):
                     return projected_pt
                 else:
                     from .quadratic_problem import QuadraticProblem
-                    qp = QuadraticProblem(self.objective_function, self.constraints)
+                    qp = QuadraticProblem(self.objective_function, self.constraints, is_pos_def=True)
                     return qp.solve()
             else:
                 return super().solve()

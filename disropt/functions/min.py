@@ -29,6 +29,9 @@ class Min(Max):
     def _to_cvxpy(self):
         import cvxpy as cvx
         return cvx.minimum(self.f1._to_cvxpy(), self.f2._to_cvxpy())
+    
+    def _extend_variable(self, n_var, axis, pos):
+        return Min(-self.f1._extend_variable(n_var, axis, pos), -self.f2._extend_variable(n_var, axis, pos))
 
     @check_input
     def eval(self, x: np.ndarray) -> np.ndarray:

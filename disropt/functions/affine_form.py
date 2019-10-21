@@ -90,6 +90,9 @@ class AffineForm(AbstractFunction):
 
     def _to_cvxpy(self):
         return self.A.transpose() @ self.fn._to_cvxpy() + self.b.flatten()
+    
+    def _extend_variable(self, n_var, axis, pos):
+        return AffineForm(self.fn._extend_variable(n_var, axis, pos), self.A, self.b)
 
     def get_parameters(self):
         if self.is_affine:

@@ -67,6 +67,9 @@ class SquaredNorm(AbstractFunction):
     def eval(self, x: np.ndarray) -> np.ndarray:
         # TODO: order
         return anp.power(anp.linalg.norm(self.fn.eval(x), ord=self.order, axis=self.axis), 2).reshape(self.output_shape)
+    
+    def _extend_variable(self, n_var, axis, pos):
+        return SquaredNorm(self.fn._extend_variable(n_var, axis, pos), self.order, self.axis)
 
     @check_input
     def _alternative_jacobian(self, x: np.ndarray, **kwargs) -> np.ndarray:

@@ -53,6 +53,9 @@ class Square(AbstractFunction):
     @check_input
     def eval(self, x: np.ndarray) -> np.ndarray:
         return anp.power(self.fn.eval(x), 2).reshape(self.output_shape)
+    
+    def _extend_variable(self, n_var, axis, pos):
+        return Square(self.fn._extend_variable(n_var, axis, pos))
 
     # @check_input
     # def jacobian(self, x: np.ndarray, **kwargs) -> np.ndarray:

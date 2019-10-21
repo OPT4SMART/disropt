@@ -25,17 +25,19 @@ class QuadraticProblem(Problem):
     Args:
         objective_function (QuadraticForm): objective function
         constraints (list, optional): list of constraints. Defaults to None.
+        is_pos_def (bool): True if P is (semi)positive definite. Defaults to True.
     """
 
-    def __new__(cls, objective_function: QuadraticForm = None, constraints: list = None):
+    def __new__(cls, objective_function: QuadraticForm = None, constraints: list = None, is_pos_def: bool = True):
         instance = object.__new__(cls)
         return instance
 
-    def __init__(self, objective_function: QuadraticForm, constraints: list = None):
+    def __init__(self, objective_function: QuadraticForm, constraints: list = None, is_pos_def: bool = True):
         self.objective_function = None
         self.constraints = []
         self.input_shape = None
         self.output_shape = None
+        self.is_pos_def = is_pos_def
         self.set_objective_function(objective_function)
         if not check_affine_constraints(constraints):
             raise ValueError("Constraints must be affine")
@@ -56,8 +58,9 @@ class QuadraticProblem(Problem):
         if not isinstance(objective_function, QuadraticForm):
             raise TypeError("Objective function must be a QuadraticForm")
         P, _, _ = objective_function.get_parameters()
-        if not is_semi_pos_def(P):
-            warnings.warn("Objective function is not convex.")
+        if not self.is_pos_def:
+            if not is_semi_pos_def(P):
+                warnings.warn("Objective function is not convex.")
         self.objective_function = objective_function
         self.input_shape = objective_function.input_shape
         self.output_shape = objective_function.output_shape
