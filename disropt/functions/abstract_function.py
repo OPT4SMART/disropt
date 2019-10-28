@@ -4,7 +4,6 @@ from autograd import jacobian as ag_jacobian
 from autograd import hessian as ag_hessian
 from typing import Union
 from .utilities import check_input
-from ..constraints.constraints import Constraint
 import warnings
 
 
@@ -118,6 +117,44 @@ class AbstractFunction:
             return ScalarMulFunction(other, self)
         else:
             raise TypeError
+   
+    def __truediv__(self, other):
+        if isinstance(other, AbstractFunction):
+            from .power import Power
+            return MulFunction(self, Power(other, -1))
+        elif isinstance(other, (int, float)):
+            return ScalarMulFunction(1.0/other, self)
+        else:
+            raise TypeError
+
+    def __rdiv__(self, other: Union[int, float]):
+        if isinstance(other, (int, float)):
+            return ScalarMulFunction(1.0/other, self)
+        else:
+            raise NotImplementedError
+
+    def __idiv__(self, other):
+        if isinstance(other, AbstractFunction):
+            from .power import Power
+            return MulFunction(self, Power(other, -1))
+        elif isinstance(other, (int, float)):
+            return ScalarMulFunction(1.0/other, self)
+        else:
+            raise TypeError
+
+    def __pow__(self, other):
+        if isinstance(other, (int, float)):
+            from .power import Power
+            return Power(self, float(other))
+        else:
+            raise TypeError
+
+    def __ipow__(self, other):
+        if isinstance(other, (int, float)):
+            from .power import Power
+            return Power(self, float(other))
+        else:
+            raise TypeError
 
     def __matmul__(self, other):
         if isinstance(other, AbstractFunction):
@@ -146,11 +183,13 @@ class AbstractFunction:
         if isinstance(other, AbstractFunction):
             if (self.input_shape != other.input_shape) or (self.output_shape != other.output_shape):
                 raise ValueError("Incompatible shapes")
+            from ..constraints.constraints import Constraint
             return Constraint(self - other, sign=sign)
 
         if isinstance(other, np.ndarray):
             if other.shape != self.output_shape:
                 raise ValueError("Incompatible shapes")
+            from ..constraints.constraints import Constraint
             return Constraint(self - other, sign=sign)
 
         if isinstance(other, (int, float)):
@@ -158,6 +197,7 @@ class AbstractFunction:
                 const = other * np.ones(self.output_shape)
             else:
                 const = other
+            from ..constraints.constraints import Constraint
             return Constraint(self - const, sign=sign)
 
     def __eq__(self, other):
@@ -279,11 +319,12 @@ class AbstractFunction:
             raise ValueError("Undefined subgradient")
         else:
             try:
-                subg = self._subgradient(x).reshape(self.input_shape)
-            except RuntimeWarning:
+                subg = self._alternative_subgradient(x).reshape(self.input_shape)
+            except NotImplementedError:
                 try:
-                    subg = self._alternative_subgradient(x).reshape(self.input_shape)
-                except NotImplementedError:
+                    subg = self._subgradient(x).reshape(self.input_shape)
+                    # subg = self._alternative_subgradient(x).reshape(self.input_shape)
+                except RuntimeWarning:
                     raise NotImplementedError("No subgradient can be computed")
             # subg = self.jacobian(x).reshape(self.input_shape)
             # np.nan_to_num(subg, copy=False)
@@ -326,13 +367,16 @@ class ConstantSumFunction(AbstractFunction):
 
         super().__init__()
 
+    def _expression(self):
+        return str(self.constant) + " + " + self.fn._expression()
+
     @check_input
     def eval(self, x):
         return self.fn.eval(x) + self.constant
 
     def _to_cvxpy(self):
         return self.constant + self.fn._to_cvxpy()
-
+    
     def _extend_variable(self, n_var, axis, pos):
         return self.fn._extend_variable(n_var, axis, pos) + self.constant
 
@@ -381,7 +425,7 @@ class SumFunction(AbstractFunction):
 
     def _to_cvxpy(self):
         return self.f1._to_cvxpy() + self.f2._to_cvxpy()
-
+    
     def _extend_variable(self, n_var, axis, pos):
         return self.f1._extend_variable(n_var, axis, pos) + self.f2._extend_variable(n_var, axis, pos)
 
@@ -422,9 +466,12 @@ class NegFunction(AbstractFunction):
 
         super().__init__()
 
+    def _expression(self):
+        return " - " + self.fn._expression()
+
     def _to_cvxpy(self):
         return -self.fn._to_cvxpy()
-
+    
     def _extend_variable(self, n_var, axis, pos):
         return -self.fn._extend_variable(n_var, axis, pos)
 
@@ -472,6 +519,9 @@ class MulFunction(AbstractFunction):
 
         super().__init__()
 
+    def _expression(self):
+        return self.f1._expression() + " * " + self.f2._expression()
+
     @check_input
     def eval(self, x):
         return self.f1.eval(x) * self.f2.eval(x)
@@ -481,7 +531,7 @@ class MulFunction(AbstractFunction):
 
     def _to_cvxpy(self):
         return self.f1._to_cvxpy() * self.f2._to_cvxpy()
-
+    
 
 class ScalarMulFunction(AbstractFunction):
     def __init__(self, scalar: Union[int, float], fn: AbstractFunction):
@@ -509,13 +559,16 @@ class ScalarMulFunction(AbstractFunction):
 
         super().__init__()
 
+    def _expression(self):
+        return str(self.scalar) + " * " + self.fn._expression()
+
     def _to_cvxpy(self):
         return self.scalar * self.fn._to_cvxpy()
 
     @check_input
     def eval(self, x):
         return self.scalar * self.fn.eval(x)
-
+    
     def _extend_variable(self, n_var, axis, pos):
         return self.scalar * self.fn._extend_variable(n_var, axis, pos)
 
@@ -563,6 +616,9 @@ class MatMulFunction(AbstractFunction):
             self.differentiable = True
 
         super().__init__()
+
+    def _expression(self):
+        return self.f1._expression() + " @ " + self.f2._expression()
 
     @check_input
     def eval(self, x):
@@ -614,6 +670,9 @@ class ConstantMatMulFunction(AbstractFunction):
             self.affine = True
 
         super().__init__()
+
+    def _expression(self):
+        return str(self.constant()) + " @ " + self.fn._expression()
 
     @check_input
     def eval(self, x):

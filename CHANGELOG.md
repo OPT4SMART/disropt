@@ -1,3 +1,8 @@
+Version 0.1.3
+--------------
+* Added dividion operator for functions
+* Added Power function 
+
 Version 0.1.2
 --------------
 * Fixed ADMM

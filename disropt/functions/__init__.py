@@ -10,5 +10,6 @@ from .log import Log
 from .logistic import Logistic
 from .max import Max
 from .min import Min
+from .power import Power
 from .square import Square
 from .abs import Abs
