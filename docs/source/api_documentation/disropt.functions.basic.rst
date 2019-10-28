@@ -141,3 +141,14 @@ Square
     :show-inheritance:
 
     .. automethod:: eval(self, w)
+
+Power
+-----------------------------------------
+
+.. autoclass:: disropt.functions.power.Power
+    :members:
+    :exclude-members: eval, subgradient, jacobian
+    :undoc-members:
+    :show-inheritance:
+
+    .. automethod:: eval(self, w)
