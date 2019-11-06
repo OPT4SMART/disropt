@@ -18,12 +18,9 @@ class ConstraintConsensus(Algorithm):
 
             \\begin{split}
             \min_{x} \hspace{1.1cm} & \: c^\\top x \\\\
-            \mathrm{subj. to} \: x\\in \\cap_{i=1}^{N} X_i \\\\
+            \mathrm{subj. to} &\: x\\in \\cap_{i=1}^{N} X_i \\\\
             & \: x \ge 0
             \\end{split}
-
-        .. warning::
-            This class is currently under development
 
     Attributes:
         agent (AwareAgent): agent to execute the algorithm
