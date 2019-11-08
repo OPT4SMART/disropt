@@ -51,7 +51,7 @@ Coming soon...
 **DISROPT** is developed by
 [Francesco Farina](https://francescofarina.github.io),
 [Andrea Camisa](https://www.unibo.it/sitoweb/a.camisa),
-[Andrea Testa](http://opt4smart.dei.unibo.it/people/andrea_testa.html),
+[Andrea Testa](https://www.unibo.it/sitoweb/a.testa),
 [Ivano Notarnicola](https://www.unibo.it/sitoweb/ivano.notarnicola), and
 [Giuseppe Notarstefano](https://www.unibo.it/sitoweb/giuseppe.notarstefano)
 
