@@ -45,13 +45,23 @@ pip install disropt
 * [Examples](https://disropt.readthedocs.io/en/latest/examples/index.html)
 
 ## Citing **DISROPT**
-Coming soon...
+
+```
+@article{farina2019disropt,
+  title={{DISROPT}: a {Python} {Framework} for {Distributed} {Optimization}},
+  author={Farina, Francesco and Camisa, Andrea and Testa, Andrea and Notarnicola, Ivano and Notarstefano, Giuseppe},
+  journal={arXiv},
+  archivePrefix = {arXiv},
+  eprint = {1911.02410},
+  year={2019}
+}
+```
 
 ## Constributors
 **DISROPT** is developed by
 [Francesco Farina](https://francescofarina.github.io),
 [Andrea Camisa](https://www.unibo.it/sitoweb/a.camisa),
-[Andrea Testa](http://opt4smart.dei.unibo.it/people/andrea_testa.html),
+[Andrea Testa](https://www.unibo.it/sitoweb/a.testa),
 [Ivano Notarnicola](https://www.unibo.it/sitoweb/ivano.notarnicola), and
 [Giuseppe Notarstefano](https://www.unibo.it/sitoweb/giuseppe.notarstefano)
 
