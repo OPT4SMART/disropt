@@ -48,7 +48,7 @@ pip install disropt
 
 ```
 @article{farina2019disropt,
-  title={{DISROPT}: a {Python} {Framework} for {Distributed} {Optimization}},
+  title={DISROPT: a Python Framework for Distributed Optimization},
   author={Farina, Francesco and Camisa, Andrea and Testa, Andrea and Notarnicola, Ivano and Notarstefano, Giuseppe},
   journal={arXiv},
   archivePrefix = {arXiv},
