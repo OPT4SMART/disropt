@@ -1,3 +1,8 @@
+Version 0.1.5
+--------------
+* Submodular function
+* Bug fix
+
 Version 0.1.4
 --------------
 * Constraint consensus algorithm

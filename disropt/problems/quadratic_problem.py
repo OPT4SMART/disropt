@@ -161,8 +161,8 @@ class QuadraticProblem(Problem):
         if isinstance(P, np.ndarray):
             if not check_symmetric(P):
                 raise ValueError("Matrix P must be symmetric.")
-            if not is_semi_pos_def(P):
-                raise ValueError("Nonconvex objective function.")
+            # if not is_semi_pos_def(P):
+            #     raise ValueError("Nonconvex objective function.")
             P = sp.csc_matrix(2*P)
         return P, q.flatten()
 
@@ -332,7 +332,7 @@ class QuadraticProblem(Problem):
         Returns:
             numpy.ndarray: solution
         """
-        P, _ = self.__get_cvxopt_objective_parameters()
+        P, _, _ = self.objective_function.get_parameters()#self.__get_cvxopt_objective_parameters()
         if solver == 'osqp':
             if not check_symmetric(P):
                 solver = 'cvxopt'

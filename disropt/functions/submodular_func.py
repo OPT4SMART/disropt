@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 from .abstract_function import AbstractFunction
 
 
@@ -41,7 +42,7 @@ class SubmodularFn(AbstractFunction):
         .. math::
             :label: basepoly
 
-                \\min_{x\\in B(F)}    & w^\\top x \\\\
+                \\max_{x\\in B(F)}    & w^\\top x \\\\
 
 
         where :math:`B(F)` is the base polyhedron associated to the submodular function :math:`F`
@@ -89,6 +90,74 @@ class SubmodularFn(AbstractFunction):
             ValueError: Input must be a numpy.ndarray with input_shape elements
                 """
         return self.greedy_polyhedron(x)
+
+    def blocksubgradient(self, x, block):
+        """
+        Evaluate a subgradient of the Lovasz extension of the
+        submodular function at :math:`x`
+
+        Parameters:
+                x: vector
+                block: vector
+        Returns:
+            numpy.ndarray: block subgradient of the Lovasz extension of :math:`F` at :math:`x`
+
+        Raises:
+            ValueError: Input must be a numpy.ndarray with input_shape elements
+                """
+        xb = copy.deepcopy(x)
+        xb = xb.flatten()
+        n = len(self.V)
+
+        idx = np.where(xb[block] == np.amin(xb[block]))
+        idx = np.asarray(idx)
+        right_index = block[idx.item(0)]
+        pivot = xb[right_index]
+        rg_idx = np.arange(n)
+        xb[0], xb[right_index] = xb[right_index], xb[0]
+        rg_idx[0], rg_idx[right_index] = rg_idx[right_index], rg_idx[0]
+        i = 1
+        for j in np.arange(1, len(xb)):
+            if xb[j] >= pivot:
+                xb[j], xb[i] = xb[i], xb[j]
+                rg_idx[j], rg_idx[i] = rg_idx[i], rg_idx[j]
+                i += 1
+        xb[0], xb[i - 1] = xb[i - 1], xb[0]
+        rg_idx[0], rg_idx[i-1] = rg_idx[i-1], rg_idx[0]
+
+        i_n = np.where(rg_idx == right_index)
+        i_n = i_n[0].item(0)+1
+        Ind = np.flip(np.argsort(xb[:i_n]))
+        Ind = rg_idx[:i_n][Ind]
+        lb = len(block)
+        count = 1
+        y = np.zeros((n, 1))
+
+        empt = np.array([], dtype='int')
+        Fold = self.eval(empt[:, None])
+        A = np.ones((1, 1), dtype='int')
+        A[0, :] = self.V[Ind[0]]
+        prev = -1
+        i = 1
+        if Ind[0] in block:
+            y[Ind[0]] = self.eval(A) - Fold
+            Fold = Fold + y[Ind[0]]
+            count += 1
+            prev = 0
+        while count <= lb:
+            Anew = np.vstack((A, self.V[Ind[i]]))
+            if Ind[i] in block:
+                Fnew = self.eval(Anew)
+                if i == prev+1:
+                    y[Ind[i]] = Fnew - Fold
+                else:
+                    y[Ind[i]] = Fnew - self.eval(A)
+                prev = i
+                Fold = Fnew
+                count += 1
+            A = Anew
+            i += 1
+        return y
 
 
 class stCutFn(SubmodularFn):
@@ -172,3 +241,23 @@ class stCutFn(SubmodularFn):
         C = self.eval_cut(self.G, A)
 
         return C
+
+class Cardinality(SubmodularFn):
+
+    def eval(self, A):
+        """
+
+        Args:
+            A (numpy.ndarray): set
+
+        Returns:
+            float: cardinality of A
+
+        Raises:
+            ValueError: A must be a numpy.ndarray with size at most (|V|, 1)
+        """
+        # TODO is instace np.ndarray(int)
+        if not isinstance(A, np.ndarray) or (A.shape[0] > self.input_shape[0]) or (A.shape[1] > 1):
+            raise ValueError(
+                "Input must be a numpy.ndarray(dtype=int) with shape at most {}".format(self.input_shape[0]))
+        return len(A)
