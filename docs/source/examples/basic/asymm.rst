@@ -1,6 +1,8 @@
 ASYMM
 =======================
 
+This is an example on how to use the :class:`ASYMM` class. See also the reference [FaGa19b]_.
+
 .. literalinclude:: ../../../../examples/algorithms/asymm/launcher.py
   :caption: examples/setups/asymm/launcher.py
 

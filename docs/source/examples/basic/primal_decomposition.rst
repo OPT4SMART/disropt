@@ -1,6 +1,8 @@
 Distributed Primal Decomposition
 ================================
 
+This is an example on how to use the :class:`PrimalDecomposition` class.
+
 .. literalinclude:: ../../../../examples/algorithms/distributed_primal_decomposition/launcher.py
   :caption: examples/setups/distributed_primal_decomposition/launcher.py
 

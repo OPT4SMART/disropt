@@ -1,3 +1,11 @@
+Version 0.1.6
+--------------
+* Constraints Consensus: various fixes, example added
+* Dual subgradient and primal decomposition: added callback function
+* Added utils for time-varying graphs
+* Docs and examples improved
+* Bug fix
+
 Version 0.1.5
 --------------
 * Submodular function
@@ -9,7 +17,7 @@ Version 0.1.4
 
 Version 0.1.3
 --------------
-* Added dividion operator for functions
+* Added division operator for functions
 * Added Power function 
 
 Version 0.1.2

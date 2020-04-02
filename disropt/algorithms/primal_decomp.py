@@ -66,7 +66,8 @@ class PrimalDecomposition(Algorithm):
         self.coupling_function = ExtendedFunction(agent.problem.coupling_function)
         self.local_constraints = ExtendedConstraint(agent.problem.constraints)
 
-    def run(self, iterations: int = 1000, stepsize: Union[float, Callable] = 0.1, M: float = 1000.0, verbose: bool=False, **kwargs) -> np.ndarray:
+    def run(self, iterations: int = 1000, stepsize: Union[float, Callable] = 0.1, M: float = 1000.0,
+        verbose: bool=False, callback_iter: Callable=None, **kwargs) -> np.ndarray:
         """Run the algorithm for a given number of iterations
 
         Args:
@@ -75,6 +76,7 @@ class PrimalDecomposition(Algorithm):
                                                          If a function is given, it must take an iteration k as input and output the corresponding stepsize.. Defaults to 0.1.
             M: Value of the parameter :math:`M`. Defaults to 1000.
             verbose: If True print some information during the evolution of the algorithm. Defaults to False.
+            callback_iter: callback function to be called at the end of each iteration. Must take an iteration k as input. Defaults to None.
 
         Raises:
             TypeError: The number of iterations must be an int
@@ -90,6 +92,8 @@ class PrimalDecomposition(Algorithm):
             raise TypeError("The stepsize must be a float or a function")
         if not isinstance(M, float):
             raise TypeError("The parameter M must be a float")
+        if callback_iter is not None and not callable(callback_iter):
+            raise TypeError("The callback function must be a Callable")
 
         if self.enable_log:
             # initialize sequence of x
@@ -116,6 +120,9 @@ class PrimalDecomposition(Algorithm):
                 step = stepsize
 
             self.iterate_run(stepsize=step, M=M, **kwargs)
+
+            if callback_iter is not None:
+                callback_iter(k)
 
             # store primal solution
             if self.enable_log:

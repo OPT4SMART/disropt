@@ -21,7 +21,7 @@ from mpi4py import MPI
 from disropt.agents import Agent
 from disropt.algorithms import DualSubgradientMethod, PrimalDecomposition
 from disropt.functions import Variable
-from disropt.utils.graph_constructor import binomial_random_graph, metropolis_hastings
+from disropt.utils.graph_constructor import binomial_random_graph, metropolis_hastings, binomial_random_graph_sequence
 from disropt.problems import ConstraintCoupledProblem
 
 # get MPI info
@@ -29,8 +29,14 @@ NN = MPI.COMM_WORLD.Get_size()
 agent_id = MPI.COMM_WORLD.Get_rank()
 
 # Generate a common graph (everyone uses the same seed)
-Adj = binomial_random_graph(NN, p=0.3, seed=1)
+Adj = binomial_random_graph(NN, p=0.2, seed=1)
 W = metropolis_hastings(Adj)
+
+# generate edge probabilities
+edge_prob = np.random.uniform(0.3, 0.9, (NN, NN))
+edge_prob[Adj == 0] = 0
+i_lower = np.tril_indices(NN)
+edge_prob[i_lower] = edge_prob.T[i_lower] # symmetrize
 
 #####################
 # Generate problem parameters
@@ -42,7 +48,8 @@ W = metropolis_hastings(Adj)
 
 TT = 24 # number of time windows
 DeltaT = 20 # minutes
-PP_max = 3 * NN # kWh
+# PP_max = 3 * NN # kWh
+PP_max = 0.5 * NN # kWh
 CC_u = rnd(19,35, (TT, 1)) # EUR/MWh - TT entries
 
 #### Individual parameters
@@ -107,8 +114,16 @@ pb = ConstraintCoupledProblem(obj_func, constr, coupling_func)
 agent.set_problem(pb)
 
 # instantiate the algorithms
-y0  = np.zeros((TT, 1))
-mu0 = np.zeros((TT, 1))
+# y0  = np.zeros((TT, 1))
+# mu0 = np.zeros((TT, 1))
+y0 = 10*np.random.rand(TT, 1)
+mu0 = 10*np.random.rand(TT, 1)
+
+theothers = [i for i in range(NN) if i != agent_id]
+y_others = agent.communicator.neighbors_exchange(y0, theothers, theothers, False)
+y_others[agent_id] = y0
+y_mean = sum([x for _, x in y_others.items()])/NN
+y0 -= y_mean
 
 dds = DualSubgradientMethod(agent=agent,
                             initial_condition=mu0,
@@ -118,21 +133,33 @@ dpd = PrimalDecomposition  (agent=agent,
                             initial_condition=y0,
                             enable_log=True)
 
+############################################
+
+num_iterations = 1000
+
+# generate sequence of adjacency matrices
+Adj_seq = binomial_random_graph_sequence(Adj, num_iterations, edge_prob, NN, 1)
+
 def step_gen(k): # define a stepsize generator
     return 1/((k+1)**0.6)
+# def step_gen(k): # define a stepsize generator
+#     return 0.01
 
-num_iterations = 50
+def update_graph(k):
+    Adj_k = Adj_seq[k]
+    W_k = metropolis_hastings(Adj_k)
+    agent.set_neighbors(in_neighbors=np.nonzero(Adj_k[agent_id, :])[0].tolist(),
+                        out_neighbors=np.nonzero(Adj_k[:, agent_id])[0].tolist())
+    agent.set_weights(in_weights=W_k[agent_id, :].tolist())
 
 # run the algorithms
-_, dds_seq = dds.run(iterations=num_iterations, stepsize=step_gen)
-dpd_seq, _ = dpd.run(iterations=num_iterations, stepsize=step_gen, M=100.0)
+if agent_id == 0:
+    print("Distributed dual subgradient")
+_, dds_seq = dds.run(iterations=num_iterations, stepsize=step_gen, verbose=True)
 
-# get results
-_, dds_x = dds.get_result()
-dpd_x, _ = dpd.get_result()
-
-print("Distributed dual subgradient: agent {}: {}".format(agent_id, dds_x.flatten()))
-print("Distributed primal decomposition: agent {}: {}".format(agent_id, dpd_x.flatten()))
+if agent_id == 0:
+    print("Distributed primal decomposition")
+dpd_seq, _ = dpd.run(iterations=num_iterations, stepsize=step_gen, M=30.0, verbose=True)
 
 # save information
 if agent_id == 0:
@@ -143,6 +170,7 @@ with open('agent_{}_objective_func.pkl'.format(agent_id), 'wb') as output:
     pickle.dump(obj_func, output, pickle.HIGHEST_PROTOCOL)
 with open('agent_{}_coupling_func.pkl'.format(agent_id), 'wb') as output:
     pickle.dump(coupling_func, output, pickle.HIGHEST_PROTOCOL)
-
+with open('agent_{}_local_constr.pkl'.format(agent_id), 'wb') as output:
+    pickle.dump(constr, output, pickle.HIGHEST_PROTOCOL)
 np.save("agent_{}_seq_dds.npy".format(agent_id), dds_seq)
 np.save("agent_{}_seq_dpd.npy".format(agent_id), dpd_seq)

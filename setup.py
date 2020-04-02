@@ -5,7 +5,7 @@ with open("README_pkg.md", "r") as fh:
 
 setuptools.setup(
     name="disropt",
-    version="0.1.5",
+    version="0.1.6",
     author="Francesco Farina, Andrea Camisa, Andrea Testa, Ivano Notarnicola, Giuseppe Notarstefano",
     author_email="franc.farina@unibo.it",
     description="DISROPT: a python framework for distributed optimization",
@@ -14,13 +14,13 @@ setuptools.setup(
     url="https://disropt.github.io/disropt/",
     packages=setuptools.find_packages(),
     install_requires=[
-        'numpy>=1.16.3',
-        'scipy>=1.2.1',
         'autograd>=1.3',
+        'cvxopt>=1.2.3',
+        'cvxpy>=1.0.25',
         'mpi4py>=3.0.1',
-        'cvxopt==1.2.3',
-        'cvxpy==1.0.25',
-        'osqp==0.6.1'
+        'numpy>=1.16.3',
+        'osqp>=0.6.1',
+        'scipy>=1.2.1'
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",

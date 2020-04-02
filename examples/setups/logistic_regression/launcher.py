@@ -96,7 +96,7 @@ gradtr = GradientTracking(agent=agent,
                           enable_log=True)
 
 def step_gen(k): 
-    return 1/((k+1)**0.51)
+    return 1/((k+1)**0.6)
 
 constant_stepsize = 0.001
 num_iterations    = 20000

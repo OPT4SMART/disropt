@@ -1,6 +1,8 @@
 Distributed Dual Decomposition
 ==============================
 
+This is an example on how to use the :class:`DualDecomposition` class.
+
 .. literalinclude:: ../../../../examples/algorithms/distributed_dual_decomposition/launcher.py
   :caption: examples/setups/distributed_dual_decomposition/launcher.py
 

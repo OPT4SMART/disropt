@@ -14,7 +14,7 @@ import dill as pickle
 import numpy as np
 from mpi4py import MPI
 from disropt.agents import Agent
-from disropt.algorithms import ConstraintConsensus
+from disropt.algorithms import ConstraintsConsensus
 from disropt.functions import Variable, SquaredNorm
 from disropt.utils.graph_constructor import binomial_random_graph
 from disropt.problems import Problem
@@ -91,7 +91,7 @@ agent = Agent(
 pb = Problem(obj_func, constr)
 agent.set_problem(pb)
 # instantiate the algorithm
-constrcons = ConstraintConsensus(agent=agent,
+constrcons = ConstraintsConsensus(agent=agent,
                                  enable_log=True)
 
 n_iter = NN*3

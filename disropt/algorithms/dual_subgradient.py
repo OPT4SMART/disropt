@@ -67,7 +67,8 @@ class DualSubgradientMethod(Consensus):
         self.x_hat = self.x_hat + stepsize/self.stepsize_sum * (x_lagr - self.x_hat)
 
 
-    def run(self, iterations: int = 1000, stepsize: Union[float, Callable] = 0.1, verbose: bool=False) -> np.ndarray:
+    def run(self, iterations: int = 1000, stepsize: Union[float, Callable] = 0.1, verbose: bool=False,
+        callback_iter: Callable=None) -> np.ndarray:
         """Run the algorithm for a given number of iterations
 
         Args:
@@ -75,6 +76,7 @@ class DualSubgradientMethod(Consensus):
             stepsize: If a float is given as input, the stepsize is constant. 
                                                          If a function is given, it must take an iteration k as input and output the corresponding stepsize.. Defaults to 0.1.
             verbose: If True print some information during the evolution of the algorithm. Defaults to False.
+            callback_iter: callback function to be called at the end of each iteration. Must take an iteration k as input. Defaults to None.
 
         Raises:
             TypeError: The number of iterations must be an int
@@ -87,6 +89,8 @@ class DualSubgradientMethod(Consensus):
             raise TypeError("The number of iterations must be an int")
         if not (isinstance(stepsize, float) or callable(stepsize)):
             raise TypeError("The stepsize must be a float or a function")
+        if callback_iter is not None and not callable(callback_iter):
+            raise TypeError("The callback function must be a Callable")
 
         if self.enable_log:
             # initialize sequence of lambda
@@ -107,6 +111,9 @@ class DualSubgradientMethod(Consensus):
             else:
                 step = stepsize
             self.iterate_run(stepsize=step)
+
+            if callback_iter is not None:
+                callback_iter(k)
 
             if self.enable_log:
                 self.lambda_sequence[k] = self.x

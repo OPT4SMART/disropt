@@ -2,7 +2,7 @@ Constraint-coupled: charging of Plug-in Electric Vehicles (PEVs)
 ================================================================
 
 For the :ref:`constraint-coupled <tutorial>` set-up, we consider the problem
-of determining an optimal overnight charging schedule for a fleet of Plug-in Electric Vehicles (PEVs).
+of determining an optimal overnight charging schedule for a fleet of Plug-in Electric Vehicles (PEVs) [FalMa17]_.
 The model described in this page is inspired by the model in the paper [VuEs16]_ (we consider the
 "charge-only" case without the integer constraints on the input variables).
 The complete code of this example is given :ref:`at the end of this page <pev_code>`.
@@ -131,3 +131,4 @@ The two files can be executed by issuing the following commands in the example f
 
 .. rubric:: References
 .. [VuEs16] Vujanic, R., Esfahani, P. M., Goulart, P. J., Mariéthoz, S., & Morari, M. (2016). A decomposition method for large scale MILPs, with performance guarantees and a power system application. Automatica, 67, 144-156.
+.. [FalMa17] Falsone, A., Margellos, K., Garatti, S., & Prandini, M. (2017). Dual decomposition for multi-agent distributed optimization with coupling constraints. Automatica, 84, 149-158.

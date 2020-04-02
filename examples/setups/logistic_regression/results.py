@@ -51,9 +51,9 @@ for i in range(NN):
 plt.figure()
 plt.title('Maximum cost error (among agents)')
 plt.xlabel(r"iteration $k$")
-plt.ylabel(r"$\max_{i} \: \left|\sum_{j=1}^N f_j(x_i^k) - f^\star \right|$")
-plt.semilogy(np.arange(iters), np.amax(cost_err_subgr, axis=0), label='Distributed Subgradient')
-plt.semilogy(np.arange(iters), np.amax(cost_err_gradtr, axis=0), label='Gradient Tracking')
+plt.ylabel(r"$\max_{i} \: \left|(\sum_{j=1}^N f_j(x_i^k) - f^\star)/f^\star \right|$")
+plt.semilogy(np.arange(iters), np.amax(cost_err_subgr/cost_centr, axis=0), label='Distributed Subgradient')
+plt.semilogy(np.arange(iters), np.amax(cost_err_gradtr/cost_centr, axis=0), label='Gradient Tracking')
 plt.legend()
 
 # plot maximum solution error

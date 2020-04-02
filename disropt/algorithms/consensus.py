@@ -399,7 +399,7 @@ class BlockConsensus(Algorithm):
             if len(probabilities) != len(self.blocks_list):
                 raise ValueError("blocks_list and probabilities arguments have different lengths")
 
-            if sum(probabilities) != 1.0:
+            if np.sum(probabilities) != 1.0:
                 raise ValueError("probabilities must sum to 1")
 
             self.probabilities = probabilities

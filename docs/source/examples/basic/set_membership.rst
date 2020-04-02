@@ -1,6 +1,8 @@
 Distributed Set Membership
 ==========================
 
+This is an example on how to use the :class:`SetMembership` class. See also the reference [FaGa18]_.
+
 .. literalinclude:: ../../../../examples/algorithms/set_membership/launcher.py
   :caption: examples/setups/set_membership/launcher.py
 

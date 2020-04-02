@@ -1,6 +1,8 @@
 Gradient Tracking
 =======================
 
+This is an example on how to use the :class:`GradientTracking` class.
+
 .. literalinclude:: ../../../../examples/algorithms/gradient_tracking/launcher.py
   :caption: examples/setups/gradient_tracking/launcher.py
 

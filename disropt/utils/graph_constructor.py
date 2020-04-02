@@ -1,15 +1,16 @@
 import numpy as np
 from mpi4py import MPI
+from typing import Union
 
 
-def binomial_random_graph(N: int, p: float=None, seed: int=None, links_type: str='undirected') -> np.ndarray:
+def binomial_random_graph(N: int, p: float=None, seed: int=None, link_type: str='undirected') -> np.ndarray:
     """construct a random binomial graph
     
     Args:
         N (int): number of agents
         p (float, optional): link probability. Defaults to None (=1).
         seed (int, optional): [description]. Defaults to None (=1).
-        links_type (str, optional): 'directed' or 'undirected'. Defaults to 'undirected'.
+        link_type (str, optional): 'directed' or 'undirected'. Defaults to 'undirected'.
     
     Returns:
         numpy.ndarray: adjacency matrix
@@ -23,7 +24,7 @@ def binomial_random_graph(N: int, p: float=None, seed: int=None, links_type: str
     while True:
         Adj = np.random.binomial(1, p, (N, N))  # each entry is 1 with prob "p"
 
-        if links_type == 'undirected':
+        if link_type == 'undirected':
             Adj = np.logical_or(Adj, Adj.transpose())  # Undirected
         I_NN = np.eye(N)
 
@@ -39,8 +40,49 @@ def binomial_random_graph(N: int, p: float=None, seed: int=None, links_type: str
             break
     return Adj
 
+def binomial_random_graph_sequence(under_adj: np.ndarray, n_graphs: int, p: Union[float, np.ndarray]=0.1, period: int=None, seed: int=None, link_type: str='undirected'):
+    """Construct a sequence of random binomial graphs starting from a given underlying graph
 
-def metropolis_hastings(Adj: np.ndarray) -> np.ndarray:
+    Args:
+        under_adj (2D numpy.ndarray): Adjacency matrix of underlying graph.
+        n_graphs (int): number of graphs in the returned sequence.
+        p (float or 2D numpy.ndarray, optional): link probability. Defaults to None (=0.1).
+        period (int, optional): T-connectivity period of the returned sequence (obtained artificially with cycles).
+            Defaults to None (no T-connectivity).
+        seed (int, optional): [description]. Defaults to None (=1).
+        link_type (str, optional): 'directed' or 'undirected'. Defaults to 'undirected'.
+
+    Returns:
+        tuple(numpy.ndarray): sequence of adjacency matrices
+    """
+    if p is None:
+        p = 0.1
+    if seed is None:
+        seed = 1
+    np.random.seed(seed)
+
+    N = under_adj.shape[0]
+    adj_mask = under_adj > 0
+    adj_seq = []
+    for t in range(n_graphs):
+        # random matrix from underlying graph
+        adj_tt = np.random.binomial(adj_mask, p)
+
+        if link_type == 'undirected':
+            adj_tt = np.logical_or(adj_tt, adj_tt.transpose()) # Undirected
+
+        # add edges artificially to obtain T-connectivity
+        if period is not None: # TODO implement period != N
+            i = t % N
+            j = (t+1) % N
+            adj_tt[i,j] = 1
+            adj_tt[j,i] = 1
+        
+        adj_seq.append(adj_tt.astype(int))
+    
+    return tuple(adj_seq)
+
+def metropolis_hastings(Adj: np.ndarray, link_type: str='undirected') -> np.ndarray:
     """Construct a weight matrix using the Metropolis-Hastings method
     
     Args:

@@ -1,6 +1,8 @@
 Distributed ADMM
 =======================
 
+This is an example on how to use the :class:`ADMM` class.
+
 .. literalinclude:: ../../../../examples/algorithms/distributed_ADMM/launcher.py
   :caption: examples/setups/distributed_ADMM/launcher.py
 

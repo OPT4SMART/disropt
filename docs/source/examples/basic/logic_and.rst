@@ -1,6 +1,8 @@
 Distributed Logic AND
 =======================
 
+This is an example on how to use the :class:`LogicAnd` class.
+
 .. literalinclude:: ../../../../examples/algorithms/logic-and/launcher.py
   :caption: examples/setups/logic-and/launcher.py
 

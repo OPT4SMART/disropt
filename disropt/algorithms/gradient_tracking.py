@@ -34,6 +34,7 @@ class GradientTracking(Algorithm):
         enable_log (bool): True for enabling log
     """
 
+    # TODO choose ref
     def __init__(self, agent: Agent, initial_condition: np.ndarray, enable_log: bool = False):
         super(GradientTracking, self).__init__(agent, enable_log)
 

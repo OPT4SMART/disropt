@@ -1,13 +1,10 @@
 Common-cost: classification via Support Vector Machine
 ===========================================================
 
-For the :ref:`common-cost <tutorial>` set-up, we consider a classification scenario.
+For the :ref:`common-cost <tutorial>` set-up, we consider a classification scenario [NoBü11]_.
 In this example, a linear model is trained by maximizing the distance of the separating
 hyperplane from the training points.
 The complete code of this example is given :ref:`at the end of this page <svm_code>`.
-
-.. warning::
-  This example is currently under development
 
 Problem formulation
 --------------------------------------
@@ -86,3 +83,8 @@ The two files can be executed by issuing the following commands in the example f
 
   > mpirun -np 30 --oversubscribe python launcher.py
   > python results.py
+
+
+.. rubric:: References
+
+.. [NoBü11] Notarstefano, G.; Bullo, F.: Distributed abstract optimization via constraints consensus: Theory and applications.

@@ -1,6 +1,8 @@
 Distributed Subgradient
 =======================
 
+This is an example on how to use the :class:`SubgradientMethod` class. See also the reference [NeOz09]_.
+
 .. literalinclude:: ../../../../examples/algorithms/distributed_subgradient/launcher.py
   :caption: examples/setups/distributed_subgradient/launcher.py
 

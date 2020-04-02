@@ -1,7 +1,7 @@
 Cost-coupled: classification via Logistic Regression
 ===========================================================
 
-For the :ref:`cost-coupled <tutorial>` set-up, we consider a classification scenario.
+For the :ref:`cost-coupled <tutorial>` set-up, we consider a classification scenario [NedOz09]_.
 In this example, a linear model is trained by minimizing the so-called *logistic loss functions*.
 The complete code of this example is given :ref:`at the end of this page <logistic_regression_code>`.
 
@@ -91,3 +91,7 @@ The two files can be executed by issuing the following commands in the example f
 
   > mpirun -np 20 --oversubscribe python launcher.py
   > python results.py
+
+.. rubric:: References
+
+.. [NedOz09] Nedic, Angelia; Asuman Ozdaglar: Distributed subgradient methods for multi-agent optimization: IEEE Transactions on Automatic Control 54.1 (2009): 48.
