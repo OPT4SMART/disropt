@@ -17,7 +17,7 @@ for i in range(N):
     with open('agent_{}_coup_function.pkl'.format(i), 'rb') as input:
         local_coup_function[i] = pickle.load(input)
 
-# plot cost of running average
+# plot cost of primal sequence
 plt.figure()
 plt.title("Primal cost")
 

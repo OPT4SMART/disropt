@@ -4,7 +4,7 @@ from .subgradient import SubgradientMethod, BlockSubgradientMethod
 from .asymm import ASYMM
 from .misc import LogicAnd, AsynchronousLogicAnd
 from .gradient_tracking import GradientTracking, DirectedGradientTracking
-from .constraintexchange import ConstraintsConsensus
+from .constraintexchange import ConstraintsConsensus, DistributedSimplex, DualDistributedSimplex
 from .dual_subgradient import DualSubgradientMethod
 from .primal_decomp import PrimalDecomposition
 from .dual_decomp import DualDecomposition

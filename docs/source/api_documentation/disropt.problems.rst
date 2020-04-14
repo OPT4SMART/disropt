@@ -37,11 +37,3 @@ ConstraintCoupledProblem
   :members:
   :undoc-members:
   :show-inheritance:
-
-
-AbstractOptimizationProblem
----------------------------
-.. autoclass:: disropt.problems.AbstractOptimizationProblem
-  :members:
-  :undoc-members:
-  :show-inheritance:

@@ -43,6 +43,7 @@ class MPICommunicator(Communicator):
         self.comm = MPI.COMM_WORLD
         self.size = MPI.COMM_WORLD.Get_size()
         self.rank = MPI.COMM_WORLD.Get_rank()
+        self.requests = []
 
     def neighbors_send(self, obj, neighbors):
         """Send data to neighbors
@@ -54,7 +55,7 @@ class MPICommunicator(Communicator):
         obj_send = dill.dumps(obj)
         for neighbor in neighbors:
             req = self.comm.Isend(obj_send, dest=neighbor, tag=neighbor)
-            self.requests.append(req)
+            self.requests.append(req) # TODO in case this function is called directly, this list may explode
 
     def neighbors_receive(self, neighbors):
         """Receive data from neighbors (waits until data are received from all neighbors)
@@ -66,21 +67,20 @@ class MPICommunicator(Communicator):
             dict: dict containing received data associated to each neighbor in neighbors
         """
         received_data = {}
-        count = 0
-        while(count < len(neighbors)):
-            state = MPI.Status()
-            okay = self.comm.Iprobe(
-                source=MPI.ANY_SOURCE, tag=MPI.ANY_TAG, status=state)
-            if(okay):
-                node = state.Get_source()
-                data = bytearray(state.Get_count())
-                self.comm.Recv(data, source=node, tag=state.Get_tag())
-                data = dill.loads(data)
-                if node not in received_data:
-                    count += 1
-                received_data[node] = data
-            else:
-                pass
+
+        while(len(received_data) < len(neighbors)):
+
+            # cycle over remaining neighbors
+            for node in [k for k in neighbors if k not in received_data]:
+                state = MPI.Status()
+                okay = self.comm.Iprobe(source=node, tag=MPI.ANY_TAG, status=state)
+
+                if(okay):
+                    data = bytearray(state.Get_count())
+                    self.comm.Recv(data, source=node, tag=state.Get_tag())
+                    data = dill.loads(data)
+                    received_data[node] = data
+
         return received_data
 
     def neighbors_receive_asynchronous(self, neighbors):
@@ -114,7 +114,6 @@ class MPICommunicator(Communicator):
         Returns:
             dict: dict containing received data associated to each neighbor in in-neighbors
         """
-        # self.comm.Barrier()
 
         self.requests = []
         if dict_neigh == False:
@@ -123,6 +122,6 @@ class MPICommunicator(Communicator):
             for j in out_neighbors:
                 self.neighbors_send(send_obj[j], [j])
         data = self.neighbors_receive(in_neighbors)
-        # MPI.Request.Waitall(self.requests)
-        self.comm.Barrier()
+        MPI.Request.Waitall(self.requests)
+        # self.comm.Barrier()
         return data

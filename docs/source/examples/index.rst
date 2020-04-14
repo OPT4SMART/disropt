@@ -28,6 +28,7 @@ We provide an example for each implemented distributed algorithm
     Distributed ADMM <basic/admm.rst>
     ASYMM <basic/asymm.rst>
     Constraints Consensus <basic/constraints_consensus.rst>
+    Distributed Simplex <basic/distributed_simplex.rst>
     Distributed Dual Subgradient <basic/dual_subgradient.rst>
     Distributed Primal Decomposition <basic/primal_decomposition.rst>
 

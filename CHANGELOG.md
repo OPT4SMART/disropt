@@ -1,3 +1,10 @@
+Version 0.1.7
+--------------
+* Distributed Simplex algorithm
+* Improvements to MPI communicator
+* LP utils
+* Ring graph utility
+
 Version 0.1.6
 --------------
 * Constraints Consensus: various fixes, example added
@@ -13,7 +20,7 @@ Version 0.1.5
 
 Version 0.1.4
 --------------
-* Constraint consensus algorithm
+* Constraints Consensus algorithm
 
 Version 0.1.3
 --------------

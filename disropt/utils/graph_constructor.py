@@ -2,6 +2,23 @@ import numpy as np
 from mpi4py import MPI
 from typing import Union
 
+def ring_graph(N: int, link_type: str='undirected') -> np.ndarray:
+    """construct a ring graph
+    
+    Args:
+        N (int): number of agents
+        link_type (str, optional): 'directed' or 'undirected'. Defaults to 'undirected'.
+    
+    Returns:
+        numpy.ndarray: adjacency matrix
+    """
+
+    Adj = np.roll(np.eye(N), -1, 0)
+
+    if link_type == 'undirected':
+        Adj = np.logical_or(Adj, Adj.transpose())
+    
+    return Adj.astype(int)
 
 def binomial_random_graph(N: int, p: float=None, seed: int=None, link_type: str='undirected') -> np.ndarray:
     """construct a random binomial graph
