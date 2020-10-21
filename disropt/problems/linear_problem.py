@@ -18,7 +18,11 @@ class LinearProblem(Problem):
                             & A x = b
     """
 
-    def __init__(self, objective_function: AffineForm, constraints: list = None):
+    def __new__(cls, *args, **kwargs):
+        instance = object.__new__(cls)
+        return instance
+
+    def __init__(self, objective_function: AffineForm, constraints: list = None, **kwargs):
         """[summary]
 
         Args:
@@ -26,13 +30,15 @@ class LinearProblem(Problem):
             constraints (list, optional): [description]. Defaults to None.
         """
         self.objective_function = None
+        self.aggregated_constraints = []
         self.constraints = []
         self.input_shape = None
         self.output_shape = None
         self.set_objective_function(objective_function)
-        if not check_affine_constraints(constraints):
-            raise ValueError("Constraints must be affine")
-        self.__set_constraints(constraints)
+        if constraints is not None:
+            if not check_affine_constraints(constraints):
+                raise ValueError("Constraints must be affine")
+            self.__set_constraints(constraints)
 
     def set_objective_function(self, objective_function: AffineForm):
         """set the objective function
@@ -86,7 +92,6 @@ class LinearProblem(Problem):
             else:
                 raise TypeError("a list of affine Constraints must be provided")
 
-        self.aggregated_constraints = []
         if len(equalities) != 0:
             aggregated_equality = aggregate_affine_form(equalities)
             self.aggregated_constraints.append(aggregated_equality == 0)

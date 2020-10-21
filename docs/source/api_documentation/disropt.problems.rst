@@ -17,6 +17,20 @@ LinearProblem
   :undoc-members:
   :show-inheritance:
 
+MixedIntegerLinearProblem
+--------------------------------
+.. autoclass:: disropt.problems.MixedIntegerLinearProblem
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+ConvexifiedMILP
+--------------------------------
+.. autoclass:: disropt.problems.ConvexifiedMILP
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
 QuadraticProblem
 ------------------------
 .. autoclass:: disropt.problems.QuadraticProblem
@@ -34,6 +48,14 @@ ProjectionProblem
 ConstraintCoupledProblem
 ------------------------
 .. autoclass:: disropt.problems.ConstraintCoupledProblem
+  :members:
+  :exclude-members: coupling_function
+  :undoc-members:
+  :show-inheritance:
+
+ConstraintCoupledMILP
+------------------------
+.. autoclass:: disropt.problems.ConstraintCoupledMILP
   :members:
   :undoc-members:
   :show-inheritance:

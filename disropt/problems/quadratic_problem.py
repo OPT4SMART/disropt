@@ -28,11 +28,11 @@ class QuadraticProblem(Problem):
         is_pos_def (bool): True if P is (semi)positive definite. Defaults to True.
     """
 
-    def __new__(cls, objective_function: QuadraticForm = None, constraints: list = None, is_pos_def: bool = True):
+    def __new__(cls, *args, **kwargs):
         instance = object.__new__(cls)
         return instance
 
-    def __init__(self, objective_function: QuadraticForm, constraints: list = None, is_pos_def: bool = True):
+    def __init__(self, objective_function: QuadraticForm, constraints: list = None, is_pos_def: bool = True, **kwargs):
         self.objective_function = None
         self.constraints = []
         self.input_shape = None

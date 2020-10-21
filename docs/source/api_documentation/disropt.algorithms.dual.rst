@@ -31,7 +31,7 @@ Distributed dual subgradient method
    :undoc-members:
    :show-inheritance:
 
-Distributed primal decomposition
+Distributed Primal Decomposition
 -------------------------------------------
 .. _alg_primal_decomp:
 
@@ -40,6 +40,14 @@ Distributed primal decomposition
    :undoc-members:
    :show-inheritance:
 
+Distributed Primal Decomposition for MILPs
+-------------------------------------------
+.. _alg_primal_decomp_milp:
+
+.. autoclass:: disropt.algorithms.primal_decomp_milp.PrimalDecompositionMILP
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 ASYMM (beta)
 -------------------------------------------

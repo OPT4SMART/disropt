@@ -18,13 +18,17 @@ class ProjectionProblem(Problem):
         point (numpy.ndarray): point :math:`p` to project
     """
 
-    def __init__(self, constraints_list, point):
+    def __new__(cls, *args, **kwargs):
+        instance = object.__new__(cls)
+        return instance
+
+    def __init__(self, constraints, point, **kwargs):
         from ..functions import Variable, QuadraticForm
         x = Variable(point.shape[0])
         objective_function = 0.5 * (x - point) @ (x - point)
         self.point = point
 
-        super(ProjectionProblem, self).__init__(objective_function, constraints_list)
+        super(ProjectionProblem, self).__init__(objective_function, constraints, **kwargs)
 
         self.only_affine_constraints = False
         if len(self.nonlinear_constraints) == 0:

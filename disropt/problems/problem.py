@@ -30,7 +30,7 @@ class Problem:
         output_shape (tuple): output shape
     """
 
-    def __new__(cls, objective_function: AbstractFunction = None, constraints: list = None, force_general_problem: bool = False):
+    def __new__(cls, objective_function: AbstractFunction = None, constraints: list = None, force_general_problem: bool = False, **kwargs):
         instance = object.__new__(cls)
         if not force_general_problem:
             if cls.__name__ == 'Problem':
@@ -51,7 +51,7 @@ class Problem:
         return instance
 
     def __init__(self, objective_function: AbstractFunction = None, constraints: list = None,
-                 force_general_problem: bool = False):
+                 force_general_problem: bool = False, **kwargs):
         self.objective_function = None
         self.constraints = []
         self.input_shape = None
