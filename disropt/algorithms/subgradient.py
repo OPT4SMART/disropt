@@ -6,6 +6,7 @@ from typing import Union, Callable, Tuple
 from ..agents import Agent
 from ..constraints.projection_sets import AbstractSet
 from .consensus import Consensus, BlockConsensus
+from disropt.functions.submodular_func import SubmodularFn
 
 
 class SubgradientMethod(Consensus):
@@ -120,7 +121,19 @@ class BlockSubgradientMethod(BlockConsensus):
         block = list(selected_block)
         y = x
         # Perform a sugradient step
-        self.x[block] = y[block] - stepsize * self.agent.problem.objective_function.subgradient(y)[block]
+        block_method = getattr(self.agent.problem.objective_function, "blocksubgradient", None)
+
+        if callable(block_method):
+            self.x[block] = y[block] - stepsize * self.agent.problem.objective_function.blocksubgradient(y, block)[block]
+        else:
+            self.x[block] = y[block] - stepsize * self.agent.problem.objective_function.subgradient(y)[block]
+
+        if isinstance(self.agent.problem.objective_function, SubmodularFn):
+            for i in np.arange(len(block)):
+                if self.x[block[i]] > 1:
+                    self.x[block[i]] = 1
+                if self.x[block[i]] < 0:
+                    self.x[block[i]] = 0
         if projection:
             # TODO: single block projection with multiple sets
             old_x = deepcopy(self.x)

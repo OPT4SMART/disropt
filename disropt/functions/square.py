@@ -25,11 +25,7 @@ class Square(AbstractFunction):
         if not isinstance(fn, AbstractFunction):
             raise TypeError("Input must be a AbstractFunction object")
 
-        if not fn.is_differentiable:
-            warnings.warn(
-                'Composition with a nondifferentiable function will lead to an\
-                    error when asking for a subgradient')
-        else:
+        if fn.is_differentiable:
             self.differentiable = True
 
         self.fn = fn

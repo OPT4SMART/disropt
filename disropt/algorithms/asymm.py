@@ -9,15 +9,14 @@ from ..agents import Agent
 from .algorithm import Algorithm
 from .misc import AsynchronousLogicAnd, LogicAnd
 from ..utils.utilities import is_pos_def
-from ..functions import Variable, SquaredNorm, Square, Max, Norm, Square
-
+from ..functions import Variable, SquaredNorm, Square, Max, Norm, Square, Abs
 
 class ASYMM(AsynchronousLogicAnd):
     """Asyncrhonous Distributed Method of Multipliers [FaGa19b]_
 
     See [FaGa19b]_ for the details.
 
-    .. warning::
+    .. warning:: 
         This algorithm is currently under development
 
     """
@@ -57,11 +56,11 @@ class ASYMM(AsynchronousLogicAnd):
         # constant stepsize
         self.alpha = 0.1
         # initial tolerance
-        self.e = 5
+        self.e = 0.1
         # penalty threshold
         self.gamma = 0.25
         # penalty growth parameter
-        self.beta = 4
+        self.beta = 2
 
         # auxiliary variables
         self.M_done = False
@@ -71,15 +70,15 @@ class ASYMM(AsynchronousLogicAnd):
 
     def __initialize_multipliers(self):
         for neigh in self.agent.in_neighbors:
-            self.nu_from[neigh] = 0.01*np.random.rand(*self.shape)
-            self.rho_from[neigh] = 1
-            self.nu_to[neigh] = 0.01*np.random.rand(*self.shape)
-            self.rho_to[neigh] = 1
+            self.nu_from[neigh] = 0.000001*np.random.rand(*self.shape)
+            self.rho_from[neigh] = 0.1
+            self.nu_to[neigh] = 0.000001*np.random.rand(*self.shape)
+            self.rho_to[neigh] = 0.1
 
             self.gr_cn[neigh] = np.linalg.norm(self.x - self.x_neigh[neigh], ord=2)
         for idx, constraint in enumerate(self.agent.problem.constraints):
-            self.multiplier[idx] = 0.01*np.random.rand(*constraint.output_shape)
-            self.penalty[idx] = 1
+            self.multiplier[idx] = 0.000001*np.random.rand(*constraint.output_shape)
+            self.penalty[idx] = 0.1
 
             if constraint.is_equality:
                 self.constr_val[idx] = np.linalg.norm(constraint.function.eval(self.x), ord=2)
@@ -91,12 +90,13 @@ class ASYMM(AsynchronousLogicAnd):
         x = Variable(self.shape[0])
 
         # objective function
-        fn = self.agent.problem.objective_function
+        fn = 0
+        fn += self.agent.problem.objective_function
 
         # neighboring constraints
         for j in self.agent.in_neighbors:
-            fn += (self.nu_to[j] - self.nu_from[j]) @ x +\
-                (self.rho_to[j]+self.rho_from[j]) / 2 * (x - self.x_neigh[j])@(x - self.x_neigh[j])
+            fn += (self.nu_to[j] - self.nu_from[j]) @ x + (self.rho_to[j]+self.rho_from[j]) / 2 * (x - self.x_neigh[j]) @ (x - self.x_neigh[j])
+            # fn += (self.rho_to[j]+self.rho_from[j]) / 2 * Abs((x - self.x_neigh[j])@(x - self.x_neigh[j]) - 1e-7)
 
         # equality constraints
         for idx, constraint in enumerate(self.agent.problem.constraints):
@@ -111,43 +111,25 @@ class ASYMM(AsynchronousLogicAnd):
         self.local_lagrangian = fn
 
     def __update_stepsize(self):
-        # m = 25
-        # n = 10
-        # delta = 1
-        # space_diam = 5
-        # l = np.zeros([m, 1])
-        # for itr in range(m):
-        #     for _ in range(n):
-        #         p1 = self.x + space_diam * (np.random.rand(self.shape[0], self.shape[1])-0.5)
-        #         p2 = p1 + delta * (np.random.rand(self.shape[0], self.shape[1])-0.5)
-        #         dp = np.linalg.norm(p1-p2)
-        #         while dp > delta:
-        #             p2 = p1 + delta * (np.random.rand(self.shape[0], self.shape[1])-0.5)
-        #             dp = np.linalg.norm(p1-p2)
-
-        #         g1 = self.local_lagrangian.subgradient(p1)
-        #         g2 = self.local_lagrangian.subgradient(p2)
-        #         dg = np.linalg.norm(g1-g2)
-        #         l[itr] = max(l[itr], dg/dp)
-
-        # par = stats.weibull_min.fit(l)
-        # self.alpha = 1/abs(par[-2])
         # TODO stepsize estimate
-        self.alpha /= 1.2
+        self.alpha /= 1.4
 
-    def __perform_descent(self, stepsize_type=None):
+    def __perform_descent(self, stepsize_type='newton'):
         if stepsize_type == 'newton':
             gradient = self.local_lagrangian.subgradient(self.x)
             hessian = self.local_lagrangian.hessian(self.x)
             if is_pos_def(hessian):
-                #self.x -= 0.5 * np.linalg.inv(hessian) @ gradient
-                self.x -= 0.5 * 1/np.linalg.norm(hessian) * gradient
+                try:
+                    self.x -= 0.5 * np.linalg.inv(hessian) @ gradient
+                except:
+                    self.x -= 0.5 * 1/np.linalg.norm(hessian) * gradient
             else:
                 self.x -= min(self.alpha, self.e/10) * gradient
         else:
             self.x -= self.alpha * self.local_lagrangian.subgradient(self.x)
-
+    
     def primal_update_step(self):
+        self.__update_local_lagrangian()
         self.__perform_descent()
         gradient = self.local_lagrangian.subgradient(self.x)
         if np.linalg.norm(gradient, ord=2) <= self.e:
@@ -156,10 +138,8 @@ class ASYMM(AsynchronousLogicAnd):
 
     def dual_update_step(self):
         for neigh in self.agent.out_neighbors:
-            self.nu_to[neigh] += self.rho_to[neigh]*(self.x - self.x_neigh[neigh])
-            if np.linalg.norm(
-                    self.x - self.x_neigh[neigh]) >= 0.01 and np.linalg.norm(
-                    self.x - self.x_neigh[neigh]) >= self.gamma * self.gr_cn[neigh]:
+            self.nu_to[neigh] += float(self.rho_to[neigh]) * (self.x - self.x_neigh[neigh])
+            if np.linalg.norm(self.x - self.x_neigh[neigh]) >= self.gamma * self.gr_cn[neigh]:
                 self.rho_to[neigh] = min(self.beta * self.rho_to[neigh], self.max_penalty)
             # norm of the constraint value
             self.gr_cn[neigh] = np.linalg.norm(self.x-self.x_neigh[neigh])
@@ -170,7 +150,6 @@ class ASYMM(AsynchronousLogicAnd):
                 if np.linalg.norm(constr.function.eval(self.x), ord=2) > self.gamma * self.constr_val[idx]:
                     self.penalty[idx] = min(self.beta * self.penalty[idx], self.max_penalty)
                 self.constr_val[idx] = np.linalg.norm(constr.function.eval(self.x), ord=2)
-                print(np.linalg.norm(constr.function.eval(self.x), ord=2))
             elif constr.is_inequality:
                 self.multiplier[idx] = np.max(
                     [np.zeros(constr.output_shape),
@@ -195,7 +174,7 @@ class ASYMM(AsynchronousLogicAnd):
         self.e = self.e/1.5
         self.__update_stepsize()
 
-    def run(self, running_time: float = 10):
+    def run(self, running_time: float = 10.0):
         if not isinstance(running_time, float):
             raise TypeError("Running time must be a float")
         if self.enable_log:
@@ -204,7 +183,7 @@ class ASYMM(AsynchronousLogicAnd):
                 dims.append(dim)
             self.dims = dims
             self.sequence = np.zeros(dims)
-            self.sequence[0] = self.x
+            self.sequence[0] += self.x
             self.timestamp_sequence_awake = [time.time()]
             self.timestamp_sequence_sleep = [time.time()]
 
@@ -233,6 +212,7 @@ class ASYMM(AsynchronousLogicAnd):
                     self.nu_from[neigh] = msg['nu']
                     self.rho_from[neigh] = msg['rho']
                     received_nu += 1
+                del(msg)
 
             if self.M_done and received_nu == len(self.agent.in_neighbors):
                 received_nu = 0

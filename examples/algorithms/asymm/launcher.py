@@ -1,5 +1,6 @@
 import numpy as np
 import networkx as nx
+import dill as pickle
 from mpi4py import MPI
 from disropt.agents import Agent
 from disropt.algorithms.asymm import ASYMM
@@ -13,17 +14,18 @@ nproc = comm.Get_size()
 local_rank = comm.Get_rank()
 
 # Generate a common graph (everyone use the same seed)
-Adj = binomial_random_graph(nproc, p=0.1, seed=1)
+Adj = binomial_random_graph(nproc, p=1, seed=1)
 W = metropolis_hastings(Adj)
 graph = nx.DiGraph(Adj)
 graph_diameter = nx.diameter(graph)
 
+if local_rank == 0:
+    print(Adj)
 
 # create local agent
 agent = Agent(in_neighbors=np.nonzero(Adj[local_rank, :])[0].tolist(),
               out_neighbors=np.nonzero(Adj[:, local_rank])[0].tolist(),
               in_weights=W[local_rank, :].tolist())
-
 
 # problem set-up
 n = 2
@@ -31,8 +33,11 @@ n = 2
 # target point
 x_true = np.random.randn(n, 1)
 
+if local_rank == 0:
+    print(x_true)
+
 # reset local seed
-np.random.seed(local_rank)
+np.random.seed(10 * local_rank)
 
 # local position
 c = np.random.randn(n, 1)
@@ -44,12 +49,11 @@ distance = np.linalg.norm(x_true-c, ord=2)
 x = Variable(n)
 
 # define the local objective function
-objective = x@x
+objective = (x -c) @ (x - c)
 
 # local constraint
-upper_bound = (x-c)@(x-c) <= (distance**2 + 0.0001*np.random.rand())
-lower_bound = (x-c)@(x-c) >= (distance**2 - 0.0001*np.random.rand())
-constr = SquaredNorm(x-c) == distance**2
+upper_bound = (x-c) @ (x-c) <= (distance**2 + 0.00001*np.random.rand())
+lower_bound = (x-c) @ (x-c) >= (distance**2 - 0.00001*np.random.rand())
 
 constraints = [upper_bound, lower_bound]
 # define local problem
@@ -63,13 +67,14 @@ algorithm = ASYMM(agent=agent,
                   initial_condition=x0,
                   enable_log=True)
 
-timestamp_sequence_awake, timestamp_sequence_sleep, sequence = algorithm.run(running_time=5.0)
+timestamp_sequence_awake, timestamp_sequence_sleep, sequence = algorithm.run(running_time=30.0)
 
 # print solution
-print(x_true)
-print("Agent {}: {}".format(agent.id, algorithm.get_result()))
+print("Agent {}:\n value: {}\n".format(agent.id, algorithm.get_result()))
 
 # save data
+with open('agent_{}_constraints.pkl'.format(agent.id), 'wb') as output:
+    pickle.dump(agent.problem.constraints, output, pickle.HIGHEST_PROTOCOL)
 np.save("agents.npy", nproc)
 np.save("agent_{}_sequence.npy".format(agent.id), sequence)
 np.save("agent_{}_timestamp_sequence_awake.npy".format(agent.id), timestamp_sequence_awake)
