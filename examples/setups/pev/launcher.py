@@ -159,7 +159,7 @@ _, dds_seq = dds.run(iterations=num_iterations, stepsize=step_gen, verbose=True)
 
 if agent_id == 0:
     print("Distributed primal decomposition")
-dpd_seq, _ = dpd.run(iterations=num_iterations, stepsize=step_gen, M=30.0, verbose=True)
+dpd_seq, _, _ = dpd.run(iterations=num_iterations, stepsize=step_gen, M=30.0, verbose=True)
 
 # save information
 if agent_id == 0:

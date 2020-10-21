@@ -68,8 +68,8 @@ def step_gen(k): # define a stepsize generator
     return 0.1/np.sqrt(k+1)
 
 # run the algorithm
-x_sequence, y_sequence = algorithm.run(iterations=1000, stepsize=step_gen, M=100.0)
-x_t, y_t = algorithm.get_result()
+x_sequence, y_sequence, J_sequence = algorithm.run(iterations=1000, stepsize=step_gen, M=100.0, verbose=True)
+x_t, y_t, J_t = algorithm.get_result()
 print("Agent {}: primal {} allocation {}".format(agent.id, x_t.flatten(), y_t.flatten()))
 
 np.save("agents.npy", nproc)
