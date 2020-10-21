@@ -21,6 +21,7 @@ We provide an example for each implemented distributed algorithm
 
     Consensus <basic/consensus.rst>
     Logic AND <basic/logic_and.rst>
+    Max Consensus <basic/max_consensus.rst>
     Set Membership <basic/set_membership.rst>
     Distributed Subgradient <basic/subgradient.rst>
     Gradient Tracking <basic/gradient_tracking.rst>

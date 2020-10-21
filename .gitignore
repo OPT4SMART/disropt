@@ -1,10 +1,8 @@
-disroptproject/.vscode
 *.DS_Store
 *.pyc
 *.npy
 *.texpadtmp
 *.pkl
-=======
 docs/build
 
 # Packages
@@ -12,4 +10,3 @@ docs/build
 *.egg-info
 dist
 build
-

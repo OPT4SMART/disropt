@@ -149,3 +149,91 @@ class AsynchronousLogicAnd(LogicAnd):
             if self.check_stop():
                 print("logic-and completed in {} s".format(time.time()-start_time))
                 break
+
+class MaxConsensus(Algorithm):
+    """Max-Consensus algorithm. It computes the entry-wise maximum of a numpy array by using only neighboring communication.
+        
+    Args:
+        agent (Agent): Agent
+        x0 (np.ndarray): local initial condition
+        graph_diameter (int, optional): diameter of the graph representing the network
+        enable_log (bool, optional): True to enable log. Defaults to False.
+    """
+
+    def __init__(self, agent: Agent, x0: np.ndarray, graph_diameter: int = None, enable_log: bool = False, **kwargs):
+        super(MaxConsensus, self).__init__(agent, enable_log, **kwargs)
+
+        self.x0 = x0
+        self.x  = x0
+        self.graph_diameter = graph_diameter
+        self.stop_iterations = None
+
+        # if the graph diameter is provided, set stopping criterion
+        if graph_diameter is not None:
+            self.stop_iterations = 2 * graph_diameter + 1
+    
+    def iterate_run(self):
+        """Run an iterate
+        """
+        data = self.agent.neighbors_exchange(self.x)
+
+        for neigh in data:
+            self.x = np.maximum(self.x, data[neigh])
+
+    def run(self, iterations: int = 100, verbose: bool=False):
+        """Run the algorithm
+        
+        Args:
+            iterations: Maximum number of iterations. Defaults to 100.
+            verbose: If True print some information during the evolution of the algorithm. Defaults to False.
+        
+        Raises:
+            TypeError: maximum iterations must be an int
+        """
+        if not isinstance(iterations, int) or iterations <= 0:
+            raise TypeError("iterations must be a positive integer")
+
+        if self.enable_log:
+            # initialize sequence
+            dims = [iterations]
+            dims.extend(self.x.shape)
+            self.sequence_x = np.zeros(dims)
+        
+        # initialize counter for stopping criterion
+        counter = 0
+        last_iter = np.copy(iterations)
+
+        for k in range(iterations):
+            # store previous value
+            prev_x = self.x
+
+            # perform an iteration
+            self.iterate_run()
+
+            # store solution sequence
+            if self.enable_log:
+                self.sequence_x[k] = self.x
+
+            # print information
+            if verbose and self.agent.id == 0:
+                print('Iteration {}'.format(k), end="\r")
+
+            # increase counter if solution has not changed, otherwise reset
+            if np.linalg.norm(prev_x - self.x) < 1e-6:
+                counter += 1
+            else:
+                counter = 0
+            
+            # check termination condition
+            if self.stop_iterations is not None and counter > self.stop_iterations:
+                # convergence detected
+                self.agent.neighbors_send(self.x) # broadcast local basis a last time
+                last_iter = k+1
+                break
+
+        # return sequences
+        if self.enable_log:
+            return self.sequence_x.take(np.arange(0,last_iter), axis=0)
+        
+    def get_result(self):
+        return self.x

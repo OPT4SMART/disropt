@@ -18,6 +18,14 @@ Asynchronous Distributed Logic-And
    :undoc-members:
    :show-inheritance:
 
+Distributed Max-Consensus
+-------------------------------------------
+.. _alg_max_consensus:
+
+.. autoclass:: disropt.algorithms.misc.MaxConsensus
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 
 .. rubric:: References
