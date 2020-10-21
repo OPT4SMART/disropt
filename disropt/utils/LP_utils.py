@@ -1,6 +1,6 @@
 import numpy as np
-from disropt.problems.linear_problem import LinearProblem
-from disropt.functions import Variable
+from ..problems.linear_problem import LinearProblem
+from ..functions import Variable
 
 def generate_LP(n_var: int, n_constr: int, radius: float, direction: str='min', constr_form: str='ineq'):
     """Generate a feasible and not unbounded Linear Program and return problem data (cost, constraints, solution)
@@ -9,15 +9,16 @@ def generate_LP(n_var: int, n_constr: int, radius: float, direction: str='min', 
     Args:
         n_var (int): number of optimization variables
         n_constr (int): number of constraints
-        radius (float): size of feasible set (inequality form), size of dual feasible set (equality form)
-        direction (str): optimization direction - either 'max' (for maximization) or 'min' (for minimization, default)
-        constr_form (str): form of constraints - either 'ineq' (for inequality: Ax <= b, default) or 'eq' (for standard form: Ax = b, x >= 0)
+        radius (float): size of feasible set (for constr_form = 'ineq'), size of dual feasible set (for constr_form = 'eq')
+        direction (str, optional): optimization direction - either 'max' (for maximization) or 'min' (for minimization). Defaults to 'min'
+        constr_form (str, optional): form of constraints - either 'ineq' (for inequality: :math:`Ax \le b`) or 'eq' (for standard form: :math:`Ax = b, x \ge 0`). Defaults to 'ineq'
 
     Returns:
-        c (np.ndarray): cost vector
-        A (np.ndarray): constraint matrix
-        b (np.ndarray): constraint vector (right-hand side)
-        solution (np.ndarray): optimal solution of problem
+        tuple:
+            - **c** (*numpy.ndarray*): cost vector
+            - **A** (*numpy.ndarray*): constraint matrix
+            - **b** (*numpy.ndarray*): constraint vector (right-hand side)
+            - **solution** (*numpy.ndarray*): optimal solution of problem
     """
 
     size_1 = n_constr

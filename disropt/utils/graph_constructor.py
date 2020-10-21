@@ -20,6 +20,21 @@ def ring_graph(N: int, link_type: str='undirected') -> np.ndarray:
     
     return Adj.astype(int)
 
+def path_graph(N: int) -> np.ndarray:
+    """construct an undirected path graph
+    
+    Args:
+        N (int): number of agents
+    
+    Returns:
+        numpy.ndarray: adjacency matrix
+    """
+
+    Adj = np.eye(N, k=1)
+    Adj = np.logical_or(Adj, Adj.transpose())
+    
+    return Adj.astype(int)
+
 def binomial_random_graph(N: int, p: float=None, seed: int=None, link_type: str='undirected') -> np.ndarray:
     """construct a random binomial graph
     
