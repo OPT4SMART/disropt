@@ -1,4 +1,5 @@
 from typing import Union, Any
+from threading import Event
 from ..communicators import Communicator, MPICommunicator
 from ..problems import Problem
 
@@ -154,7 +155,7 @@ class Agent():
             for neighbor in self.out_neighbors:
                 self.out_weights[neighbor] = 1/len(self.out_neighbors)
 
-    def neighbors_exchange(self, obj: Any, dict_neigh=False):
+    def neighbors_exchange(self, obj: Any, dict_neigh=False, stop_event: Event=None):
         """Exchange data with neighbors (synchronously). Send obj to the out-neighbors and receive received_obj from in-neighbors
 
         Args:
@@ -165,7 +166,7 @@ class Agent():
             dict: a dictionary containing an object for each in-neighbor
         """
         received_obj = self.communicator.neighbors_exchange(
-            obj, self.in_neighbors, self.out_neighbors, dict_neigh)
+            obj, self.in_neighbors, self.out_neighbors, dict_neigh, stop_event)
         return received_obj
 
     def neighbors_send(self, obj: Any):

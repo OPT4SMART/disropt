@@ -1,4 +1,6 @@
 from mpi4py import MPI
+from threading import Event
+from typing import List, Dict, Any
 import dill
 
 
@@ -10,27 +12,22 @@ class Communicator():
     def __init__(self):
         pass
 
-    def send(self):
+    def neighbors_send(self, obj: Any, neighbors: List[int]):
         pass
 
-    def receive(self):
+    def neighbors_receive(self, neighbors: List[int], stop_event: Event) -> Dict[int, Any]:
         pass
 
-    def neighbors_send(self, obj, neighbors):
+    def neighbors_receive_asynchronous(self, neighbors: List[int]) -> Dict[int, Any]:
         pass
 
-    def neighbors_receive(self, neighbors):
-        pass
-
-    def neighbors_receive_asynchronous(self, neighbors):
-        pass
-
-    def neighbors_exchange(self, send_obj, in_neighbors, out_neighbors, dict_neigh):
+    def neighbors_exchange(self, send_obj: Any, in_neighbors: List[int], out_neighbors: List[int],
+        dict_neigh: bool, stop_event: Event) -> Dict[int, Any]:
         pass
 
 
 class MPICommunicator(Communicator):
-    """MPICommunicator class performs communications through MPI. Requires mpi4py.
+    """Communicator class that performs communications through MPI. Requires mpi4py.
 
     Attributes:
         comm: communication world
@@ -45,30 +42,36 @@ class MPICommunicator(Communicator):
         self.rank = MPI.COMM_WORLD.Get_rank()
         self.requests = []
 
-    def neighbors_send(self, obj, neighbors):
-        """Send data to neighbors
+    def neighbors_send(self, obj: Any, neighbors: List[int]):
+        """Send data to neighbors.
 
         Args:
-            obj (Any): object to send
-            neighbors (list): list of neighbors
+            obj: object to send
+            neighbors: list of out-neighbors
         """
         obj_send = dill.dumps(obj)
         for neighbor in neighbors:
             req = self.comm.Isend(obj_send, dest=neighbor, tag=neighbor)
             self.requests.append(req) # TODO in case this function is called directly, this list may explode
 
-    def neighbors_receive(self, neighbors):
-        """Receive data from neighbors (waits until data are received from all neighbors)
+    def neighbors_receive(self, neighbors: List[int], stop_event: Event = None) -> Dict[int, Any]:
+        """Receive data from neighbors (waits until data are received from all neighbors).
 
         Args:
-            neighbors (list): list of neighbors
+            neighbors: list of in-neighbors
+            stop_event: an Event object that is monitored during the execution.
+                If the event is set, the function returns immediately.
+                Defaults to None (does not wait upon any event)
 
         Returns:
-            dict: dict containing received data associated to each neighbor in neighbors
+            data received by in-neighbors
         """
         received_data = {}
 
         while(len(received_data) < len(neighbors)):
+
+            if stop_event is not None and stop_event.is_set():
+                break
 
             # cycle over remaining neighbors
             for node in [k for k in neighbors if k not in received_data]:
@@ -83,14 +86,14 @@ class MPICommunicator(Communicator):
 
         return received_data
 
-    def neighbors_receive_asynchronous(self, neighbors):
+    def neighbors_receive_asynchronous(self, neighbors: List[int]) -> Dict[int, Any]:
         """Receive data (if any) from neighbors.
 
         Args:
-            neighbors (list): list of neighbors
+            neighbors: list of in-neighbors
 
         Returns:
-            dict: dict containing received data
+            data received by in-neighbors (if any)
         """
         received_data = {}
         state = MPI.Status()
@@ -102,17 +105,22 @@ class MPICommunicator(Communicator):
 
         return received_data
 
-    def neighbors_exchange(self, send_obj, in_neighbors, out_neighbors, dict_neigh):
-        """exchange information (synchronously) with neighbors
+    def neighbors_exchange(self, send_obj: Any, in_neighbors: List[int], out_neighbors: List[int],
+            dict_neigh: bool=False, stop_event: Event = None) -> Dict[int, Any]:
+        """Exchange information (synchronously) with neighbors.
 
         Args:
-            send_obj (any): object to send
-            in_neighbors (list): list of in-neighbors
-            out_neighbors (list): list of out-neighbors
-            dict_neigh: True if send_obj contains a dictionary with different objects for each neighbor
+            send_obj: object to send
+            in_neighbors: list of in-neighbors
+            out_neighbors: list of out-neighbors
+            dict_neigh: True if send_obj contains a dictionary with different objects for each neighbor.
+                Defaults to False
+            stop_event: an Event object that is monitored during the execution.
+                If the event is set, the function returns immediately.
+                Defaults to None (does not wait upon any event)
 
         Returns:
-            dict: dict containing received data associated to each neighbor in in-neighbors
+            data received by in-neighbors
         """
 
         self.requests = []
@@ -121,7 +129,7 @@ class MPICommunicator(Communicator):
         else:
             for j in out_neighbors:
                 self.neighbors_send(send_obj[j], [j])
-        data = self.neighbors_receive(in_neighbors)
+        data = self.neighbors_receive(in_neighbors, stop_event)
         MPI.Request.Waitall(self.requests)
         # self.comm.Barrier()
         return data

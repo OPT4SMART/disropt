@@ -9,7 +9,6 @@ Communicator
 .. autoclass:: disropt.communicators.Communicator
    :members:
    :undoc-members:
-   :show-inheritance:
 
 MPICommunicator
 -------------------------------
