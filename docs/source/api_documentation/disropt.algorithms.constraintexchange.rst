@@ -19,6 +19,15 @@ Distributed Simplex
    :undoc-members:
    :show-inheritance:
 
+Dual Distributed Simplex
+-----------------------------------------------
+.. _alg_dualdistributedsimplex:
+
+.. autoclass:: disropt.algorithms.constraintexchange.DualDistributedSimplex
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 .. rubric:: References
 
 .. [NoBu11] Notarstefano, G.; Bullo, F.: Distributed abstract optimization via constraints consensus: Theory and applications.

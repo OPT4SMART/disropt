@@ -5,6 +5,7 @@ from ..problems import Problem, LinearProblem
 from ..functions import QuadraticForm, Variable
 from itertools import combinations
 from typing import Tuple
+from threading import Event
 
 # TODO simplify code and add more detailed comments to methods
 class ConstraintsConsensus(Algorithm):
@@ -185,13 +186,16 @@ class ConstraintsConsensus(Algorithm):
             constr.append(con)
         return constr
 
-    def iterate_run(self):
+    def iterate_run(self, event: Event):
         """Run a single iterate of the algorithm
         """
 
         # convert basis to dictionary and send to neighbors
         basis_dict = self.constr_to_dict(self.B)
-        data = self.agent.neighbors_exchange(basis_dict)
+        data = self.agent.neighbors_exchange(basis_dict, event=event)
+
+        if event is not None and event.is_set():
+            return
 
         # create list of agent's constraints + received constraints
         constraints = []
@@ -206,7 +210,7 @@ class ConstraintsConsensus(Algorithm):
         # compute new basis
         self.B = self.compute_basis(constraints)
 
-    def run(self, iterations=100, verbose: bool=False, **kwargs) -> np.ndarray:
+    def run(self, iterations=100, verbose: bool=False, event: Event=None, **kwargs) -> np.ndarray:
         """Run the algorithm for a given number of iterations
 
         Args:
@@ -222,9 +226,16 @@ class ConstraintsConsensus(Algorithm):
             for dim in self.shape:
                 dims.append(dim)
             self.sequence_x = np.zeros(dims)
+        
+        last_iter = np.copy(iterations)
 
         for k in range(iterations):
-            self.iterate_run()
+            self.iterate_run(event)
+
+            # check if we must stop for external event
+            if event is not None and event.is_set():
+                last_iter = k
+                break
 
             if self.enable_log:
                 self.sequence_x[k] = self.x
@@ -234,7 +245,7 @@ class ConstraintsConsensus(Algorithm):
                     print('Iteration {}'.format(k), end="\r")
 
         if self.enable_log:
-            return self.sequence_x
+            return self.sequence_x.take(np.arange(0,last_iter), axis=0)
 
     def get_result(self):
         """Return the current value of x
@@ -260,9 +271,6 @@ class DistributedSimplex(Algorithm):
         
         When reading the variable agent.problem.constraints, this class only
         considers equality constraints. Other constraints are discarded.
-
-        .. warning::
-            This class is currently under development
 
     Attributes:
         x (numpy.ndarray): current value of the complete solution
@@ -454,12 +462,15 @@ class DistributedSimplex(Algorithm):
         """
         return (self.x, self.x_basic, self.x_dual, self.J)
 
-    def iterate_run(self):
+    def iterate_run(self, event: Event):
         """Run a single iterate of the algorithm
         """
 
         # exchange columns with neighbors - TODO implement exchange of "null" symbol
-        data = self.agent.neighbors_exchange(self.B)
+        data = self.agent.neighbors_exchange(self.B, event=event)
+
+        if event is not None and event.is_set():
+            return
 
         # concatenate all the received bases
         for neigh in data:
@@ -487,7 +498,7 @@ class DistributedSimplex(Algorithm):
         # update local solution
         self._update_local_solution(H_sort[:, sol[1]])
 
-    def run(self, iterations=100, verbose: bool=False, **kwargs) -> np.ndarray:
+    def run(self, iterations=100, verbose: bool=False, event: Event=None, **kwargs) -> np.ndarray:
         """Run the algorithm for a given number of iterations
 
         Args:
@@ -522,7 +533,12 @@ class DistributedSimplex(Algorithm):
             prev_B = self.B
 
             # perform an iteration
-            self.iterate_run()
+            self.iterate_run(event)
+
+            # check if we must stop for external event
+            if event is not None and event.is_set():
+                last_iter = k
+                break
 
             # store solution and cost sequence
             if self.enable_log:
@@ -572,9 +588,6 @@ class DualDistributedSimplex(DistributedSimplex):
             \\end{split}
         
         This class runs the Distributed Simplex algorithm on the (standard form) dual problem.
-
-        .. warning::
-            This class is currently under development
 
     Args:
         agent (Agent): agent to execute the algorithm
@@ -792,6 +805,7 @@ def lex_simplex(tableau: np.ndarray, b: np.ndarray, ind_basic: np.ndarray,
 
         # pivoting
         new_ind_basic[index_LC] = index_EC
+        new_ind_basic.sort()
 
     return False, new_ind_basic, nn+1
 
