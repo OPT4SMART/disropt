@@ -5,4 +5,4 @@ mpi4py>=3.0.1
 numpy>=1.16.3
 osqp>=0.6.1
 scipy>=1.2.1
-
+dill>=0.3.0

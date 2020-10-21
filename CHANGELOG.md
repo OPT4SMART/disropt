@@ -1,3 +1,14 @@
+Version 0.1.8
+--------------
+* Added Distributed Primal Decomposition for MILPs
+* Added Max-consensus
+* Added path graph utility
+* Communicator: various improvements, added stop event
+* Constraint exchange algorithms: added stop event
+* Distributed Primal Decomposition: added stop event and computation of running average
+* Improved documentation
+* Fixes to ASYMM and block subgradient method
+
 Version 0.1.7
 --------------
 * Distributed Simplex algorithm

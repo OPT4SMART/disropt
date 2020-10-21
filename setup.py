@@ -5,13 +5,13 @@ with open("README_pkg.md", "r") as fh:
 
 setuptools.setup(
     name="disropt",
-    version="0.1.7",
+    version="0.1.8",
     author="Francesco Farina, Andrea Camisa, Andrea Testa, Ivano Notarnicola, Giuseppe Notarstefano",
     author_email="franc.farina@unibo.it",
     description="DISROPT: a python framework for distributed optimization",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://disropt.github.io/disropt/",
+    url="https://opt4smart.github.io/disropt/",
     packages=setuptools.find_packages(),
     install_requires=[
         'autograd>=1.3',
@@ -20,7 +20,8 @@ setuptools.setup(
         'mpi4py>=3.0.1',
         'numpy>=1.16.3',
         'osqp>=0.6.1',
-        'scipy>=1.2.1'
+        'scipy>=1.2.1',
+        'dill>=0.3.0'
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",

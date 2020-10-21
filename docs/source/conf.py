@@ -15,13 +15,13 @@ import sys
 
 from unittest.mock import MagicMock
 
-class Mock(MagicMock):
+class RecursiveMock(MagicMock):
     @classmethod
     def __getattr__(cls, name):
         return MagicMock()
 
 MOCK_MODULES = ['mpi4py']
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+sys.modules.update((mod_name, RecursiveMock()) for mod_name in MOCK_MODULES)
 
 
 sys.path.insert(0, os.path.abspath('../..'))
@@ -36,8 +36,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.mathjax',
               'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
-              'sphinx_autodoc_typehints',
-              ]
+              'sphinx.ext.intersphinx',
+              'sphinx_autodoc_typehints']
 napoleon_use_param = True
 
 
@@ -57,12 +57,18 @@ master_doc = 'index'
 # -- Project information -----------------------------------------------------
 
 project = 'disropt'
-copyright = '2019, Francesco Farina, Andrea Camisa, Andrea Testa, Ivano Notarnicola, Giuseppe Notarstefano'
+copyright = '2020, Francesco Farina, Andrea Camisa, Andrea Testa, Ivano Notarnicola, Giuseppe Notarstefano'
 author = 'Francesco Farina, Andrea Camisa, Andrea Testa, Ivano Notarnicola, Giuseppe Notarstefano'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.7'
+release = '0.1.8'
 
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'numpy': ('https://numpy.org/doc/stable', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
+    'mpi4py': ('https://mpi4py.readthedocs.io/en/stable', None)
+}
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

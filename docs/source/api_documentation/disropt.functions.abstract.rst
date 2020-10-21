@@ -6,7 +6,7 @@ AbstractFunction
 
 .. autoclass:: disropt.functions.abstract_function.AbstractFunction
     :members:
-    :exclude-members: eval, subgradient, jacobian
+    :exclude-members: eval, subgradient, jacobian, input_shape, output_shape, differentiable, affine, quadratic
     :undoc-members:
     :show-inheritance:
 
