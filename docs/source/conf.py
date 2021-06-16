@@ -61,7 +61,7 @@ copyright = '2020, Francesco Farina, Andrea Camisa, Andrea Testa, Ivano Notarnic
 author = 'Francesco Farina, Andrea Camisa, Andrea Testa, Ivano Notarnicola, Giuseppe Notarstefano'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.8'
+release = '0.1.9'
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),

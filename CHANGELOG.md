@@ -1,3 +1,7 @@
+Version 0.1.9
+--------------
+* Bug fix
+
 Version 0.1.8
 --------------
 * Added Distributed Primal Decomposition for MILPs
