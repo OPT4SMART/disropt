@@ -1,44 +1,53 @@
 import numpy as np
 import time
+import torch
 from typing import Callable
 from ....agents import Agent
-from ....functions.nn import TensorflowLoss
+from ....functions.nn import TorchLoss
 from ...algorithm import Algorithm
 
 
-class SubgradientMethodTF(Algorithm):
+class SubgradientMethodTorch(Algorithm):
     def __init__(self, agent: Agent, enable_log: bool = False):
         if not isinstance(agent, Agent):
             raise TypeError("Agent must be an Agent")
-        if not isinstance(agent.problem.objective_function, TensorflowLoss):
-            raise TypeError("The agent must be equipped with a TensorflowLoss objective function")
-        super(SubgradientMethodTF, self).__init__(agent, enable_log)
+        if not isinstance(agent.problem.objective_function, TorchLoss):
+            raise TypeError("The agent must be equipped with a TorchLoss objective function")
+        super(SubgradientMethodTorch, self).__init__(agent, enable_log)
 
         self.loss = agent.problem.objective_function
-        self.x = self.loss.get_trainable_variables()
+        self.x = list(self.loss.get_model_parameters())
         self.loss_sequence = None
         self.acc_sequence  = None
         self.time_sequence = None
 
     def _update_local_solution(self, stepsize: float = 0.001):
         # perform gradient step
-        grad = self.loss.subgradient()
+        self.loss.subgradient()
 
-        for i in range(len(self.x)):
-            self.x[i].assign_sub(stepsize * grad[i])
+        with torch.no_grad():
+            for p_k in iter(self.x):
+                if p_k.grad is not None:
+                    p_k.add_(p_k.grad, alpha=-stepsize)
 
     def iterate_run(self, **kwargs):
         """Run a single iterate of the algorithm
         """
-        # exchange data with neighbors
-        neigh_x = self.agent.neighbors_exchange(self.x)
+        with torch.no_grad():
+            # exchange data with neighbors
+            my_x = [p_k for p_k in iter(self.x) if p_k.requires_grad] # exchange only trainable parameters
+            neigh_x = self.agent.neighbors_exchange(my_x)
 
-        # perform consensus step
-        for i in range(len(self.x)):
-            self.x[i].assign(self.agent.in_weights[self.agent.id] * self.x[i])
+            # perform consensus step
+            k = 0
+            for p_k in iter(self.x):
+                if p_k.requires_grad: # perform only on only trainable parameters
+                    p_k.mul_(self.agent.in_weights[self.agent.id])
 
-            for j, x_j in neigh_x.items():
-                self.x[i].assign_add(self.agent.in_weights[j] * x_j[i])
+                    for j, x_j in neigh_x.items():
+                        p_k.add_(x_j[k], alpha=self.agent.in_weights[j])
+                    
+                    k += 1
 
         self._update_local_solution(**kwargs)
 

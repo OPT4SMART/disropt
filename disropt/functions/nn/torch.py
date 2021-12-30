@@ -1,31 +1,18 @@
 import numpy as np
 from disropt.functions.abstract_function import AbstractFunction
-from typing import Callable
-import tensorflow as tf
+import torch
+from torch import nn
+from torch.utils.data import DataLoader
 
 
-@tf.function
-def _tf_subgradient(X, Y, model, loss, vars):
-    with tf.GradientTape() as tape:
-        predictions = model(X, training=True)
-        loss_val = loss(Y, predictions)
-    gradient = tape.gradient(loss_val, vars)
-    return loss_val, gradient, predictions
-
-@tf.function
-def _tf_eval(X, Y, model, loss, n):
-    predictions = model(X, training=True)
-    loss_val = loss(Y, predictions)
-    norm_loss = tf.reduce_sum(loss_val) / n
-    return loss_val, norm_loss, predictions
-
-class TensorflowLoss(AbstractFunction):
-    def __init__(self, model, dataset: tf.data.Dataset, loss: Callable):
+class TorchLoss(AbstractFunction):
+    def __init__(self, model: nn.Module, dataloader: DataLoader, loss, device):
         self._model = model
         self._loss = loss
-        self._dataset = dataset
+        self._dataloader = dataloader
+        self._device = device
 
-        shapes = [el.shape for el in self._model.variables]
+        shapes = [el.shape for el in self._model.parameters() if el.requires_grad]
         self.input_shape = (sum(map(np.prod, shapes)), 1) # number of parameters
         self.output_shape = (1, 1)
 
@@ -35,8 +22,8 @@ class TensorflowLoss(AbstractFunction):
         self._Y = None
 
         # metrics
-        self._loss_metric = None
-        self._acc_metric = None
+        self.loss_metric = None
+        self.acc_metric = None
     
     def __check_batch_loaded(self):
         if self._X is None or self._Y is None:
@@ -51,6 +38,7 @@ class TensorflowLoss(AbstractFunction):
         try:
             self._X = self._Y = None
             self._X, self._Y = next(self._dataset_iterator)
+            self._X, self._Y = self._X.to(self._device), self._Y.to(self._device)
             return True
         except StopIteration:
             self._dataset_iterator = None
@@ -58,11 +46,12 @@ class TensorflowLoss(AbstractFunction):
     
     def init_epoch(self):
         self._dataset_iterator = None
-        self._dataset_iterator = iter(self._dataset)
+        self._dataset_iterator = iter(self._dataloader)
+        self._model.train() # set model in training mode
     
     @property
     def n_batches(self):
-        return int(tf.data.experimental.cardinality(self._dataset))
+        return len(self._dataloader)
     
     def set_metrics(self, loss_metric=None, acc_metric=None):
         self._loss_metric = loss_metric
@@ -84,23 +73,44 @@ class TensorflowLoss(AbstractFunction):
 
     def eval(self, update_metrics=True):
         self.__check_batch_loaded()
-        loss, norm_loss, predictions = _tf_eval(self._X, self._Y, self._model, self._loss, self._X.shape[0])
+        
+        with torch.no_grad():
+            # compute prediction error
+            pred = self._model(self._X)
+            loss = self._loss(pred, self._Y)
+        
+        # update metrics
         if update_metrics and self._loss_metric is not None:
-            self._loss_metric.update_state(loss)
+            self._loss_metric(loss)
         if update_metrics and self._acc_metric is not None:
-            self._acc_metric.update_state(self._Y, predictions)
-        return norm_loss
+            self._acc_metric(self._Y, pred)
+        
+        return loss.item()
 
-    def subgradient(self, update_metrics=True):
+    def subgradient(self, update_metrics=True, return_gradients=False):
         self.__check_batch_loaded()
-        loss, gradient, predictions = _tf_subgradient(self._X, self._Y, self._model, self._loss, self._model.trainable_variables)
-        # TODO avoid transfering tensor from device to cpu (due to conversion to numpy) when running algorithms without tracking
-        gradient_np = [x.numpy() for x in gradient]
+
+        # compute prediction error
+        pred = self._model(self._X)
+        loss = self._loss(pred, self._Y)
+
+        # update metrics
         if update_metrics and self._loss_metric is not None:
             self._loss_metric.update_state(loss)
         if update_metrics and self._acc_metric is not None:
-            self._acc_metric.update_state(self._Y, predictions)
-        return gradient_np
+            self._acc_metric.update_state(self._Y, pred)
 
-    def get_trainable_variables(self):
-        return self._model.trainable_variables
+        # backpropagation
+        self._model.zero_grad()
+        loss.backward()
+
+        # return gradients if requested
+        if return_gradients:
+            gradients = []
+            for param in self._model.parameters():
+                if param.grad is not None:
+                    gradients.append(param.grad)
+            return gradients
+
+    def get_model_parameters(self):
+        return self._model.parameters()
