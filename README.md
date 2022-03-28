@@ -47,13 +47,15 @@ pip install disropt
 ## Citing **DISROPT**
 
 ```
-@article{farina2019disropt,
-  title={DISROPT: a Python Framework for Distributed Optimization},
+@article{farina2020disropt,
+  title={Disropt: a python framework for distributed optimization},
   author={Farina, Francesco and Camisa, Andrea and Testa, Andrea and Notarnicola, Ivano and Notarstefano, Giuseppe},
-  journal={arXiv},
-  archivePrefix = {arXiv},
-  eprint = {1911.02410},
-  year={2019}
+  journal={IFAC-PapersOnLine},
+  volume={53},
+  number={2},
+  pages={2666--2671},
+  year={2020},
+  publisher={Elsevier}
 }
 ```
 
