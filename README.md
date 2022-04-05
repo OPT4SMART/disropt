@@ -63,7 +63,7 @@ pip install disropt
 **DISROPT** is developed by
 [Francesco Farina](https://francescofarina.github.io),
 [Andrea Camisa](https://www.unibo.it/sitoweb/a.camisa),
-[Andrea Testa](https://www.unibo.it/sitoweb/a.testa),
+[Andrea Testa](https://andrea-testa.github.io/),
 [Ivano Notarnicola](https://www.unibo.it/sitoweb/ivano.notarnicola), and
 [Giuseppe Notarstefano](https://www.unibo.it/sitoweb/giuseppe.notarstefano)
 
